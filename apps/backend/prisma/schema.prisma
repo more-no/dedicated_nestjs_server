@@ -1,0 +1,60 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                 Int        @id @default(autoincrement())
+  username           String     @unique @db.VarChar(20)
+  email              String     @unique
+  fullname           String?    @unique @db.VarChar(20)
+  picture_url        String?    @db.VarChar(200)
+  bio                String?    @db.VarChar(300)
+  date_registration  DateTime   @default(now()) @db.Date
+  password_hash      String     @db.VarChar(80)
+  refresh_token      String?    @db.VarChar(80)
+  post_count         Int        @default(0)
+  comment_count      Int        @default(0)
+  user_subscriptions Int        @default(0)
+  session            Session[]
+  user_role          UserRole[]
+
+  @@map("users")
+}
+
+model Session {
+  id              Int      @id @default(autoincrement())
+  token           String   @unique
+  expiryTimestamp DateTime @default(dbgenerated("NOW() + interval '24 hours'")) @map("expiry_timestamp") @db.Timestamp(3)
+  user_id         Int      @map("user_id")
+  user            User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
+
+model Role {
+  id          Int        @id @default(autoincrement())
+  role_name   RolesEnum
+  description String?
+  role        UserRole[]
+}
+
+enum RolesEnum {
+  Admin
+  Editor
+  User
+}
+
+model UserRole {
+  user_id Int
+  role_id Int
+  user    User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  role    Role @relation(fields: [role_id], references: [id], onDelete: Cascade)
+
+  @@id([user_id, role_id])
+}
