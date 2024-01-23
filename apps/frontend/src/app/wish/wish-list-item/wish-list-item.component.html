@@ -1,0 +1,19 @@
+<li class="d-flex justify-content-between">
+  <div class="form-check">
+    <label class="form-check-label" [ngClass]="cssClasses">
+      <!-- here we use a getter for the class -->
+      <!-- another way of doing it : <label class="form-check-label" [ngClass]="fulfilled ? 'strikeout' : ''">  -->
+      <!-- [checked]="item.isComplete" : Binding Data to Properties and Attributes -->
+      <input
+        class="checkbox"
+        type="checkbox"
+        [checked]="wish.isComplete"
+        (click)="toggleFulfilled()"
+      />
+      {{ wish.wishText }}
+    </label>
+  </div>
+  <div>
+    <button type="button" class="btn-close" (click)="removeWish()"></button>
+  </div>
+</li>

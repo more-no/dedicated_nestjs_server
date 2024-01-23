@@ -1,0 +1,26 @@
+{
+  "name": "nestjs-angular-app",
+  "version": "1.0.0",
+  "description": "",
+  "keywords": [],
+  "license": "ISC",
+  "author": "",
+  "main": "index.js",
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "start": "node apps/backend/dist/main",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@nestjs/mapped-types": "*",
+    "backend": "workspace:^"
+  },
+  "devDependencies": {
+    "pnpm": "^8.13.1",
+    "turbo": "^1.11.2"
+  }
+}
