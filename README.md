@@ -18,10 +18,20 @@ depending on their role.
 
 ### pnpm run dev
 
-- backend port 3000
+- backend <http://localhost:3000/>
 
-- frontend port 4200
+- frontend <http://localhost:4200/>
 
-### pnpm run build
+### pnpm run build (Turbo)
 
 ### pnpm prisma studio
+
+- <http://localhost:5555/>
+
+### Swagger UI
+
+- <http://localhost:3000/api>
+
+### Swagger JSON
+
+- <http://localhost:3000/api-json>

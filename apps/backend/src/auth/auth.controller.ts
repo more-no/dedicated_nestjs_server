@@ -1,43 +1,38 @@
-import {
-  Body,
-  Controller,
-  HttpCode,
-  HttpStatus,
-  Post,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import {
   Public,
   GetCurrentUser,
   GetCurrentUserId,
 } from 'src/common/decorators';
-import { AuthDto, AuthLoginDto } from './dto/auth.dto';
+import { AuthSignupDto, AuthLoginDto } from './dto/auth.dto';
 import { AtGuard } from 'src/common/guards/at.guard';
 import { RtGuard } from 'src/common/guards/rt.guard';
 import { Tokens } from './types';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Public()
   @Post('signup')
-  @HttpCode(HttpStatus.CREATED)
-  signup(@Body() dto: AuthDto): Promise<Tokens> {
+  @ApiResponse({ status: 201, description: 'User successfully created' })
+  signup(@Body() dto: AuthSignupDto): Promise<Tokens> {
     return this.authService.signup(dto);
   }
 
   @Public()
   @Post('login')
-  @HttpCode(HttpStatus.OK)
+  @ApiResponse({ status: 201, description: 'User successfully logged in' })
   login(@Body() dto: AuthLoginDto): Promise<Tokens> {
     return this.authService.login(dto);
   }
 
   @UseGuards(AtGuard)
   @Post('logout')
-  @HttpCode(HttpStatus.OK)
+  @ApiResponse({ status: 201, description: 'User successfully logged out' })
   logout(@GetCurrentUserId() userId: number): Promise<boolean> {
     return this.authService.logout(userId);
   }
@@ -45,7 +40,7 @@ export class AuthController {
   @Public()
   @UseGuards(RtGuard)
   @Post('refresh')
-  @HttpCode(HttpStatus.OK)
+  @ApiResponse({ status: 201, description: 'Token successfully refreshed' })
   refreshTokens(
     @GetCurrentUserId() userId: number,
     @GetCurrentUser('refreshToken') refreshToken: string,

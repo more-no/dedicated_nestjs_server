@@ -3,7 +3,7 @@ import { PrismaService } from 'prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { AuthDto, AuthLoginDto } from './dto/auth.dto';
+import { AuthSignupDto, AuthLoginDto } from './dto/auth.dto';
 import { JwtPayload, Tokens, UserCreateInput } from './types';
 
 @Injectable()
@@ -14,8 +14,18 @@ export class AuthService {
     private config: ConfigService,
   ) {}
 
-  async signup(dto: AuthDto): Promise<Tokens> {
+  async signup(dto: AuthSignupDto): Promise<Tokens> {
     const hash = await this.hashData(dto.password);
+
+    const existingUser = await this.prisma.user.findFirst({
+      where: {
+        OR: [{ username: dto.username }, { email: dto.email }],
+      },
+    });
+
+    if (existingUser) {
+      throw new ForbiddenException('Username or email already exists.');
+    }
 
     const newUser = await this.prisma.user.create({
       data: {
@@ -59,7 +69,7 @@ export class AuthService {
       },
     });
 
-    if (!user) throw new ForbiddenException('Username does not exist.');
+    if (!user) throw new ForbiddenException('Invalid username or password.');
 
     const passwordMatches = await bcrypt.compare(
       dto.password,
@@ -67,7 +77,7 @@ export class AuthService {
     );
 
     if (!passwordMatches)
-      throw new ForbiddenException('Password does not exist.');
+      throw new ForbiddenException('Invalid username or password.');
 
     const tokens = await this.getTokens(
       user.id,
@@ -109,7 +119,9 @@ export class AuthService {
 
     const rtMatches = await bcrypt.compare(rt, user.refresh_token);
 
-    if (!rtMatches) throw new ForbiddenException('Access Denied!');
+    if (!rtMatches) {
+      throw new ForbiddenException('Invalid token.');
+    }
 
     const tokens = await this.getTokens(
       user.id,

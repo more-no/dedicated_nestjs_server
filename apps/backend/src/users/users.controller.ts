@@ -8,27 +8,30 @@ import {
   Delete,
   UseInterceptors,
   UploadedFile,
-  HttpCode,
-  HttpStatus,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { SharpPipe } from './sharp.pipe';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('users')
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+  create() {
+    return this.usersService.create();
   }
 
   // reference https://docs.nestjs.com/techniques/file-upload
   @Post(':id/upload')
-  @HttpCode(HttpStatus.OK)
+  @ApiResponse({
+    status: 201,
+    description: 'User picture successfully uploaded',
+  })
+  @ApiResponse({ status: 400, description: 'Bad Request' })
   @UseInterceptors(FileInterceptor('image'))
   async upload(
     @Param('id') userId: string,
@@ -49,8 +52,13 @@ export class UsersController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(Number(id), updateUserDto);
+  @ApiResponse({
+    status: 201,
+    description: 'User successfully updated',
+  })
+  @ApiResponse({ status: 400, description: 'Bad Request' })
+  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    return await this.usersService.update(Number(id), updateUserDto);
   }
 
   @Delete(':id')

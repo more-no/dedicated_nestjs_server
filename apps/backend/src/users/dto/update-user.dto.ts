@@ -13,8 +13,5 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   fullname: string;
 
   @ApiProperty()
-  pictureUrl: string;
-
-  @ApiProperty()
   bio: string;
 }

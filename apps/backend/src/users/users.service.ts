@@ -1,12 +1,16 @@
-import { Injectable, NotFoundException, Param } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
-import { CreateUserDto, UpdateUserDto, UploadResultDto } from './dto';
+import { UpdateUserDto, UploadResultDto } from './dto';
 
 @Injectable()
 export class UsersService {
   constructor(private prisma: PrismaService) {}
 
-  create(createUserDto: CreateUserDto) {
+  create() {
     return 'This action adds a new user';
   }
 
@@ -30,29 +34,42 @@ export class UsersService {
         throw new NotFoundException('User not found');
       }
 
-      return this.prisma.user.update({
+      const userUpdated = await this.prisma.user.update({
         where: {
           id: id,
         },
         data: {
           username: updateUserDto.username,
           fullname: updateUserDto.fullname,
-          picture_url: updateUserDto.pictureUrl,
           bio: updateUserDto.bio,
         },
       });
+
+      if (!userUpdated) {
+        throw new BadRequestException('Could not update');
+      }
+
+      return {
+        username: userUpdated.username,
+        fullname: userUpdated.fullname,
+        bio: userUpdated.bio,
+      };
     } catch (error) {
-      throw new Error(`Failed to update user: ${error.message}`);
+      throw new NotFoundException(`Failed to update user: ${error.message}`);
     }
   }
 
   async upload(userId: number, pictureUrl: string): Promise<UploadResultDto> {
-    await this.prisma.user.update({
-      where: { id: userId },
-      data: { picture_url: pictureUrl },
-    });
+    try {
+      await this.prisma.user.update({
+        where: { id: userId },
+        data: { picture_url: pictureUrl },
+      });
 
-    return { userId, filename: pictureUrl };
+      return { userId, filename: pictureUrl };
+    } catch (error) {
+      throw new NotFoundException(`Failed to upload: ${error.message}`);
+    }
   }
 
   remove(id: number) {
