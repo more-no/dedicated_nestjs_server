@@ -11,11 +11,13 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdateUserDto } from './dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { SharpPipe } from './sharp.pipe';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
-import { AtGuard } from 'src/common/guards/at.guard';
+import { AtGuard, RolesGuard } from 'src/common/guards';
+import { RolesEnum } from '@prisma/client';
+import { Roles } from 'src/common/decorators';
 
 @ApiTags('users')
 @Controller('users')
@@ -28,8 +30,9 @@ export class UsersController {
   }
 
   // reference https://docs.nestjs.com/techniques/file-upload
-  @UseGuards(AtGuard)
+  @UseGuards(AtGuard, RolesGuard)
   @Post(':id/upload')
+  @Roles(RolesEnum.User)
   @ApiResponse({
     status: 201,
     description: 'User picture successfully uploaded',
@@ -54,8 +57,9 @@ export class UsersController {
     return this.usersService.findOne(+id);
   }
 
-  @UseGuards(AtGuard)
+  @UseGuards(AtGuard, RolesGuard)
   @Patch(':id')
+  @Roles(RolesEnum.User)
   @ApiResponse({
     status: 201,
     description: 'User successfully updated',

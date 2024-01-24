@@ -4,7 +4,7 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { AuthSignupDto, AuthLoginDto } from './dto/auth.dto';
-import { JwtPayload, Tokens, UserCreateInput } from './types';
+import { JwtPayload, Tokens, UserCreateInput } from '../common/types';
 
 @Injectable()
 export class AuthService {
@@ -158,11 +158,20 @@ export class AuthService {
     email: string,
     roleId: number,
   ): Promise<Tokens> {
+    const userRole = await this.prisma.userRole.findUnique({
+      where: { user_id_role_id: { user_id: userId, role_id: roleId } },
+      include: { role: true },
+    });
+
+    if (!userRole) {
+      throw new Error('User role not found');
+    }
+
     const jwtPayload: JwtPayload = {
       sub: userId,
       username: username,
       email: email,
-      roleId: roleId,
+      role_name: userRole.role.role_name,
     };
 
     const [at, rt] = await Promise.all([

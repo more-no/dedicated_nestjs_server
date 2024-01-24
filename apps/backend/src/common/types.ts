@@ -7,7 +7,7 @@ export type JwtPayload = {
   sub: number;
   username: string;
   email: string;
-  roleId: number;
+  role_name: string;
 };
 
 export type JwtPayloadWithRt = JwtPayload & { refreshToken: string };

@@ -4,6 +4,7 @@ import { UsersController } from './users.controller';
 import { MulterModule } from '@nestjs/platform-express';
 import { memoryStorage } from 'multer';
 import { JwtModule } from '@nestjs/jwt';
+import { RolesGuard } from 'src/common/guards';
 
 // https://github.com/expressjs/multer#memorystorage
 
@@ -15,6 +16,6 @@ import { JwtModule } from '@nestjs/jwt';
     JwtModule.register({}),
   ],
   controllers: [UsersController],
-  providers: [UsersService],
+  providers: [UsersService, RolesGuard],
 })
 export class UsersModule {}

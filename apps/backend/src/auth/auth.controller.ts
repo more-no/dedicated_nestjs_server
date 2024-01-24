@@ -6,9 +6,8 @@ import {
   GetCurrentUserId,
 } from 'src/common/decorators';
 import { AuthSignupDto, AuthLoginDto } from './dto/auth.dto';
-import { AtGuard } from 'src/common/guards/at.guard';
-import { RtGuard } from 'src/common/guards/rt.guard';
-import { Tokens } from './types';
+import { AtGuard, RtGuard } from 'src/common/guards';
+import { Tokens } from '../common/types';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('auth')
