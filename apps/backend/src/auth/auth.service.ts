@@ -46,6 +46,10 @@ export class AuthService {
       },
     });
 
+    if (!newUser) {
+      throw new InternalServerErrorException('Error creating the user');
+    }
+
     const tokens = await getTokens(
       newUser.id,
       newUser.username,
@@ -100,7 +104,7 @@ export class AuthService {
   }
 
   async logout(userId: number): Promise<boolean> {
-    await this.prisma.user.updateMany({
+    const userLoggedOut = await this.prisma.user.updateMany({
       where: {
         id: userId,
         refresh_token: {
@@ -112,9 +116,17 @@ export class AuthService {
       },
     });
 
-    await this.prisma.session.deleteMany({
+    if (!userLoggedOut) {
+      throw new InternalServerErrorException('Error during logout');
+    }
+
+    const deletedSession = await this.prisma.session.deleteMany({
       where: { user_id: userId },
     });
+
+    if (!deletedSession) {
+      throw new InternalServerErrorException('Error during logout');
+    }
 
     return true;
   }
@@ -144,6 +156,7 @@ export class AuthService {
       user.email,
       user.user_role[0].role_id,
     );
+
     await updateRtHash(user.id, tokens.refresh_token);
 
     return tokens;

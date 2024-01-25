@@ -61,10 +61,14 @@ export class UsersService {
 
   async upload(userId: number, pictureUrl: string): Promise<UploadResultDto> {
     try {
-      await this.prisma.user.update({
+      const userUpdated = await this.prisma.user.update({
         where: { id: userId },
         data: { picture_url: pictureUrl },
       });
+
+      if (!userUpdated) {
+        throw new BadRequestException('Could not upload');
+      }
 
       return { userId, filename: pictureUrl };
     } catch (error) {

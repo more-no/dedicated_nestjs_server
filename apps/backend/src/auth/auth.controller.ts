@@ -8,7 +8,13 @@ import {
 import { AuthSignupDto, AuthLoginDto } from './dto/auth.dto';
 import { AtGuard, RtGuard } from 'src/common/guards';
 import { Tokens } from '../common/types';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBadRequestResponse,
+  ApiCreatedResponse,
+  ApiForbiddenResponse,
+  ApiOkResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -17,21 +23,24 @@ export class AuthController {
 
   @Public()
   @Post('signup')
-  @ApiResponse({ status: 201, description: 'User successfully created' })
+  @ApiCreatedResponse({ description: 'User successfully created' })
+  @ApiBadRequestResponse({ description: 'Registration failed' })
   signup(@Body() dto: AuthSignupDto): Promise<Tokens> {
     return this.authService.signup(dto);
   }
 
   @Public()
   @Post('login')
-  @ApiResponse({ status: 201, description: 'User successfully logged in' })
+  @ApiOkResponse({ description: 'User successfully logged in' })
+  @ApiForbiddenResponse({ description: 'Access denied' })
   login(@Body() dto: AuthLoginDto): Promise<Tokens> {
     return this.authService.login(dto);
   }
 
   @UseGuards(AtGuard)
   @Post('logout')
-  @ApiResponse({ status: 201, description: 'User successfully logged out' })
+  @ApiOkResponse({ description: 'User successfully logged out' })
+  @ApiBadRequestResponse({ description: 'User not found' })
   logout(@GetCurrentUserId() userId: number): Promise<boolean> {
     return this.authService.logout(userId);
   }
@@ -39,7 +48,8 @@ export class AuthController {
   @Public()
   @UseGuards(RtGuard)
   @Post('refresh')
-  @ApiResponse({ status: 201, description: 'Token successfully refreshed' })
+  @ApiOkResponse({ description: 'Token successfully refreshed' })
+  @ApiForbiddenResponse({ description: 'Could not refresh the Token' })
   refreshTokens(
     @GetCurrentUserId() userId: number,
     @GetCurrentUser('refreshToken') refreshToken: string,

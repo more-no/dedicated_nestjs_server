@@ -13,7 +13,11 @@ import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { SharpPipe } from './sharp.pipe';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiOkResponse,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 import { AtGuard, RolesGuard } from 'src/common/guards';
 import { RolesEnum } from '@prisma/client';
 import { Roles } from 'src/common/decorators';
@@ -32,11 +36,8 @@ export class UsersController {
   @UseGuards(AtGuard, RolesGuard)
   @Post(':id/upload')
   @Roles(RolesEnum.User)
-  @ApiResponse({
-    status: 201,
-    description: 'User picture successfully uploaded',
-  })
-  @ApiResponse({ status: 400, description: 'Bad Request' })
+  @ApiOkResponse({ description: 'User picture successfully uploaded' })
+  @ApiUnauthorizedResponse({ description: 'Upload failed' })
   @UseInterceptors(FileInterceptor('image'))
   async upload(
     @Param('id') userId: string,
@@ -59,11 +60,8 @@ export class UsersController {
   @UseGuards(AtGuard, RolesGuard)
   @Patch(':id')
   @Roles(RolesEnum.User)
-  @ApiResponse({
-    status: 201,
-    description: 'User successfully updated',
-  })
-  @ApiResponse({ status: 400, description: 'Bad Request' })
+  @ApiOkResponse({ description: 'User successfully updated' })
+  @ApiUnauthorizedResponse({ description: 'Update failed' })
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return await this.usersService.update(Number(id), updateUserDto);
   }
