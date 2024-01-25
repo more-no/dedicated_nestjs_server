@@ -1,6 +1,5 @@
 import {
   Controller,
-  Get,
   Post,
   Body,
   Patch,
@@ -24,10 +23,10 @@ import { Roles } from 'src/common/decorators';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post()
-  create() {
-    return this.usersService.create();
-  }
+  // @Post()
+  // create() {
+  //   return this.usersService.create();
+  // }
 
   // reference https://docs.nestjs.com/techniques/file-upload
   @UseGuards(AtGuard, RolesGuard)
@@ -47,15 +46,15 @@ export class UsersController {
     return result;
   }
 
-  @Get()
-  findAll() {
-    return this.usersService.findAll();
-  }
+  // @Get()
+  // findAll() {
+  //   return this.usersService.findAll();
+  // }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
-  }
+  // @Get(':id')
+  // findOne(@Param('id') id: string) {
+  //   return this.usersService.findOne(+id);
+  // }
 
   @UseGuards(AtGuard, RolesGuard)
   @Patch(':id')

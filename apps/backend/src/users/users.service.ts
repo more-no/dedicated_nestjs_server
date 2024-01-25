@@ -10,17 +10,17 @@ import { UpdateUserDto, UploadResultDto } from './dto';
 export class UsersService {
   constructor(private prisma: PrismaService) {}
 
-  create() {
-    return 'This action adds a new user';
-  }
+  // create() {
+  //   return 'This action adds a new user';
+  // }
 
-  findAll() {
-    return `This action returns all users`;
-  }
+  // findAll() {
+  //   return `This action returns all users`;
+  // }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
+  // findOne(id: number) {
+  //   return `This action returns a #${id} user`;
+  // }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
     try {
