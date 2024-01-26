@@ -1,21 +1,14 @@
 import { PrismaClient } from '@prisma/client';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
-import { JwtService } from '@nestjs/jwt';
-import { getTokens } from 'src/common/utils';
 
 // reference https://www.prisma.io/docs/orm/prisma-migrate/workflows/seeding
+// seed with 'npx prisma db seed'
 
 const prisma = new PrismaClient();
 const config = new ConfigService();
 
 class Seeder {
-  // private prisma: PrismaClient;
-  // private jwtService: JwtService;
-  // private config: ConfigService;
-
-  constructor() {} // jwtService: JwtService, // config: ConfigService, // prisma: PrismaClient,
-
   async seed() {
     await prisma.role.createMany({
       data: [
@@ -30,27 +23,22 @@ class Seeder {
       10,
     );
 
-    const tokens = await getTokens(1, 'admin', 'admin@email.com', 1);
+    const adminRole = await prisma.role.findFirst({
+      where: { role_name: 'Admin' },
+    });
 
     await prisma.user.create({
       data: {
-        id: 1,
         username: 'admin',
         email: 'admin@example.com',
         password_hash: hashedPassword,
-        refresh_token: tokens.refresh_token,
         user_role: {
           create: {
             role: {
               connect: {
-                id: 1,
+                id: adminRole.id,
               },
             },
-          },
-        },
-        session: {
-          create: {
-            token: tokens.access_token,
           },
         },
       },
@@ -60,7 +48,6 @@ class Seeder {
 
 async function main() {
   const prisma = new PrismaClient();
-  const configService = new ConfigService();
 
   const seeder = new Seeder();
   await seeder.seed();

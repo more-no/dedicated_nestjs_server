@@ -1,6 +1,6 @@
 import { ConfigService } from '@nestjs/config';
 import { JwtPayload, Tokens } from '../types';
-import { PrismaService } from 'prisma/prisma.service';
+import { PrismaService } from '../../../prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 
 export async function getTokens(

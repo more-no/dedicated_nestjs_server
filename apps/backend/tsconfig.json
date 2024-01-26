@@ -9,7 +9,10 @@
     "target": "ES2021",
     "sourceMap": true,
     "outDir": "./dist",
-    "baseUrl": "./",
+    "baseUrl": "./src",
+    "paths": {
+      "@prisma/*": ["prisma/*"] // Changed to fix the imports from getTokens and updateRtHash in seed.ts
+    },
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": false,

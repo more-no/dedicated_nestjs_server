@@ -3,11 +3,11 @@ import {
   Injectable,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { PrismaService } from 'prisma/prisma.service';
+import { PrismaService } from '../../prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
 import { AuthSignupDto, AuthLoginDto } from './dto/auth.dto';
 import { Tokens, UserCreateInput } from '../common/types';
-import { getTokens, updateRtHash } from 'src/common/utils';
+import { getTokens, updateRtHash } from '../common/utils';
 
 @Injectable()
 export class AuthService {
@@ -69,7 +69,6 @@ export class AuthService {
     }
 
     await updateRtHash(newUser.id, tokens.refresh_token);
-
     return tokens;
   }
 
@@ -99,6 +98,18 @@ export class AuthService {
       user.email,
       user.user_role[0].role_id,
     );
+
+    const session = await this.prisma.session.create({
+      data: {
+        token: tokens.access_token,
+        user_id: user.id,
+      },
+    });
+
+    if (!session) {
+      throw new InternalServerErrorException('Error creating the session');
+    }
+
     await updateRtHash(user.id, tokens.refresh_token);
     return tokens;
   }
