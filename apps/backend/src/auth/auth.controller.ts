@@ -1,12 +1,8 @@
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import {
-  Public,
-  GetCurrentUser,
-  GetCurrentUserId,
-} from 'src/common/decorators';
+import { Public, GetCurrentUser, GetCurrentUserId } from '../common/decorators';
 import { AuthSignupDto, AuthLoginDto } from './dto/auth.dto';
-import { AtGuard, RtGuard } from 'src/common/guards';
+import { AtGuard, RtGuard } from '../common/guards';
 import { Tokens } from '../common/types';
 import {
   ApiBadRequestResponse,

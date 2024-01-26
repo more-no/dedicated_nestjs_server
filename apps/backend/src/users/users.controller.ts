@@ -18,9 +18,9 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { AtGuard, RolesGuard } from 'src/common/guards';
+import { AtGuard, RolesGuard } from '../common/guards';
 import { RolesEnum } from '@prisma/client';
-import { Roles } from 'src/common/decorators';
+import { Roles } from '../common/decorators';
 
 @ApiTags('users')
 @Controller('users')

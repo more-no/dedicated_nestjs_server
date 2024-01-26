@@ -6,8 +6,8 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { RolesEnum } from '@prisma/client';
-import { JwtPayload } from 'src/common/types';
-import { PrismaService } from 'prisma/prisma.service';
+import { JwtPayload } from '../../common/types';
+import { PrismaService } from '../../../prisma/prisma.service';
 
 // reference https://docs.nestjs.com/security/authorization#basic-rbac-implementation
 
