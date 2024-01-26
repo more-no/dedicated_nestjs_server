@@ -58,7 +58,7 @@ export class UsersController {
   // }
 
   @UseGuards(AtGuard, RolesGuard)
-  @Patch(':id')
+  @Patch(':id/update')
   @Roles(RolesEnum.User)
   @ApiOkResponse({ description: 'User successfully updated' })
   @ApiUnauthorizedResponse({ description: 'Update failed' })
@@ -66,8 +66,12 @@ export class UsersController {
     return await this.usersService.update(Number(id), updateUserDto);
   }
 
-  @Delete(':id')
+  @UseGuards(AtGuard, RolesGuard)
+  @Delete(':id/remove')
+  @Roles(RolesEnum.Admin, RolesEnum.User)
+  @ApiOkResponse({ description: 'User successfully deleted' })
+  @ApiUnauthorizedResponse({ description: 'Deletion failed' })
   remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+    return this.usersService.remove(Number(id));
   }
 }

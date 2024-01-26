@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
@@ -76,7 +77,27 @@ export class UsersService {
     }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(userId: number): Promise<number> {
+    try {
+      const userDeleted = await this.prisma.user.delete({
+        where: { id: userId },
+      });
+
+      if (!userDeleted) {
+        throw new BadRequestException('Could not delete the User');
+      }
+
+      const deletedSession = await this.prisma.session.deleteMany({
+        where: { user_id: userId },
+      });
+
+      if (!deletedSession) {
+        throw new InternalServerErrorException('Error during deletion');
+      }
+
+      return userId;
+    } catch (error) {
+      throw new NotFoundException('Failed to find the User');
+    }
   }
 }

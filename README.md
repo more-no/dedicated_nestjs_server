@@ -14,24 +14,80 @@ Think about an authentication and authorization solution. Users
 should be able to login and be allowed to upload a picture or not,
 depending on their role.
 
+## Tech
+
+- Nest.js
+- Angular.js
+- Turbo Repo
+- PostgreSQL
+- Prisma
+- JWT
+- bcrypt
+- Multer & Sharp
+- Swagger
+
+## Usage
+
+#### Clone the repo
+
+#### Install dependencies
+
+```
+pnpm install
+```
+
+#### Create a Postgres database and connect it
+
+#### Create an .env file following the example
+
+#### Allow Postgres user CREATEDB privilege (for Prisma Shadow Database - <https://www.prisma.io/docs/orm/prisma-migrate/understanding-prisma-migrate/shadow-database#shadow-database-user-permissions>)
+
+```sql
+GRANT CREATE ON DATABASE dbname TO username;
+```
+
+#### OR
+
+```sql
+ALTER ROLE username WITH CREATEDB;
+```
+
+#### Apply migrations and seed
+
+```
+pnpm dlx prisma migrate dev
+```
+
 ## Commands
 
-### pnpm run dev
+### Development
 
-- backend <http://localhost:3000/>
+```
+pnpm run dev
+```
 
-- frontend <http://localhost:4200/>
+#### backend <http://localhost:3000/>
 
-### pnpm run build (Turbo)
+#### frontend <http://localhost:4200/>
 
-### pnpm prisma studio
+### Build (with Turbo Repo)
 
-- <http://localhost:5555/>
+```
+pnpm run build
+```
+
+### Prisma Studio
+
+```
+pnpm prisma studio
+```
+
+#### <http://localhost:5555/>
 
 ### Swagger UI
 
-- <http://localhost:3000/api>
+#### <http://localhost:3000/api>
 
 ### Swagger JSON
 
-- <http://localhost:3000/api-json>
+#### <http://localhost:3000/api-json>
