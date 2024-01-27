@@ -3,17 +3,18 @@ import {
   Injectable,
   InternalServerErrorException,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { UpdateUserDto, UploadResultDto } from './dto';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService) {}
-
-  // create() {
-  //   return 'This action adds a new user';
-  // }
+  constructor(
+    private prisma: PrismaService,
+    private jwtService: JwtService,
+  ) {}
 
   // findAll() {
   //   return `This action returns all users`;
@@ -77,7 +78,7 @@ export class UsersService {
     }
   }
 
-  async remove(userId: number): Promise<number> {
+  async adminRemove(userId: number): Promise<number> {
     try {
       const userDeleted = await this.prisma.user.delete({
         where: { id: userId },
@@ -98,6 +99,51 @@ export class UsersService {
       return userId;
     } catch (error) {
       throw new NotFoundException('Failed to find the User');
+    }
+  }
+
+  async userRemove(userId: number, request: any): Promise<number> {
+    try {
+      const session = await this.prisma.session.findFirst({
+        where: {
+          user_id: userId,
+        },
+      });
+
+      if (!session) {
+        throw new NotFoundException('Session not found');
+      }
+
+      const sessionToken = session.token;
+      console.log('Session Token', sessionToken);
+      const requestToken = request.token;
+      console.log('Request Token', requestToken);
+
+      if (sessionToken === requestToken) {
+        const token = await this.jwtService.decode(requestToken);
+
+        const userDeleted = await this.prisma.user.deleteMany({
+          where: { id: token.sub },
+        });
+
+        if (!userDeleted) {
+          throw new InternalServerErrorException('Could not delete the User');
+        }
+
+        const deletedSession = await this.prisma.session.deleteMany({
+          where: { user_id: userId },
+        });
+
+        if (!deletedSession) {
+          throw new InternalServerErrorException('Error during deletion');
+        }
+
+        return userId;
+      } else {
+        throw new UnauthorizedException('Unauthorized');
+      }
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to delete');
     }
   }
 }

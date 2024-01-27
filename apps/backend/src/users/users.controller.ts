@@ -8,6 +8,7 @@ import {
   UseInterceptors,
   UploadedFile,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto';
@@ -21,16 +22,13 @@ import {
 import { AtGuard, RolesGuard } from '../common/guards';
 import { RolesEnum } from '@prisma/client';
 import { Roles } from '../common/decorators';
+import { Request } from 'express';
+import { TokenInterceptor } from 'common/interceptors/token.interceptor';
 
 @ApiTags('users')
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
-
-  // @Post()
-  // create() {
-  //   return this.usersService.create();
-  // }
 
   // reference https://docs.nestjs.com/techniques/file-upload
   @UseGuards(AtGuard, RolesGuard)
@@ -59,19 +57,31 @@ export class UsersController {
 
   @UseGuards(AtGuard, RolesGuard)
   @Patch(':id/update')
-  @Roles(RolesEnum.User)
+  @Roles(RolesEnum.User, RolesEnum.Editor)
   @ApiOkResponse({ description: 'User successfully updated' })
   @ApiUnauthorizedResponse({ description: 'Update failed' })
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return await this.usersService.update(Number(id), updateUserDto);
+    return await this.usersService.update(+id, updateUserDto);
   }
 
   @UseGuards(AtGuard, RolesGuard)
-  @Delete(':id/remove')
-  @Roles(RolesEnum.Admin, RolesEnum.User)
+  @Delete('admin/remove/:id')
+  @Roles(RolesEnum.Admin)
   @ApiOkResponse({ description: 'User successfully deleted' })
   @ApiUnauthorizedResponse({ description: 'Deletion failed' })
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(Number(id));
+  async adminRemove(@Param('id') id: string) {
+    return await this.usersService.adminRemove(+id);
+  }
+
+  // reference https://docs.nestjs.com/controllers#request-object
+
+  @UseGuards(AtGuard, RolesGuard)
+  @UseInterceptors(TokenInterceptor)
+  @Delete('remove/:id')
+  @Roles(RolesEnum.User)
+  @ApiOkResponse({ description: 'User successfully deleted' })
+  @ApiUnauthorizedResponse({ description: 'Deletion failed' })
+  async userRemove(@Param('id') id, @Req() request: Request) {
+    return await this.usersService.userRemove(+id, request);
   }
 }

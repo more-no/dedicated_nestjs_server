@@ -33,7 +33,7 @@ export async function getTokens(
     jwtService.signAsync(
       // verification accessToken
       jwtPayload,
-      { secret: config.get<string>('AT_SECRET'), expiresIn: 60 * 15 },
+      { secret: config.get<string>('AT_SECRET'), expiresIn: 60 * 30 },
     ),
     jwtService.signAsync(
       // verification refreshToken

@@ -99,8 +99,12 @@ export class AuthService {
       user.user_role[0].role_id,
     );
 
-    const existingSession = await this.prisma.session.findFirst({
+    const existingSession = await this.prisma.session.updateMany({
       where: {
+        user_id: user.id,
+      },
+      data: {
+        token: tokens.access_token,
         user_id: user.id,
       },
     });
