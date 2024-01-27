@@ -1,4 +1,3 @@
-// created with 'ng g component contact -m contact'
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { createInvalidDomainValidator } from './invalidEmailDomain';

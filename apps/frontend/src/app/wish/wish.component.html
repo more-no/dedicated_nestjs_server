@@ -1,12 +1,7 @@
-<!-- this was moved from 'app.component.html' -->
 <div class="container">
   <add-wish-form (addWish)="items.push($event)"> </add-wish-form>
 
   <div class="row mt-3">
-    <!-- below we make the value for the filter equal to the value provided by the event -->
-    <!-- but with a two-way binding we can simplify it
-          <wish-filter (filter)="filter = $event"> </wish-filter>
-         the new version request a both na @output and an @input in the corresponding class -->
     <wish-filter [(filter)]="filter"> </wish-filter>
   </div>
   <div class="row mt-3">

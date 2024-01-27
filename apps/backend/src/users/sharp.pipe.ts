@@ -27,7 +27,9 @@ export class SharpPipe
 
       return filename;
     } catch (error) {
-      throw new UnsupportedMediaTypeException('Failed to process file.');
+      throw new UnsupportedMediaTypeException(
+        `Failed to process file: ${error.message}`,
+      );
     }
   }
 }

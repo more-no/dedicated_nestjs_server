@@ -1,4 +1,3 @@
-// created with 'ng generate service products/products'
 import { Injectable } from '@angular/core';
 import { of } from 'rxjs';
 
@@ -20,7 +19,6 @@ export class ProductsService {
 
   constructor() {}
 
-  //  with 'of' we ask to return an Observable to which we can subscribe to
   getAllProducts() {
     return of(this.data);
   }

@@ -1,13 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
-// RxJS is a library for reactive programming using Observables, to make it easier to compose asynchronous or callback-based code.
+import { Subject } from 'rxjs';
 
-// through this we can emit events anywhere in out application, and listen to them anywhere
 @Injectable({
-  providedIn: 'root', // this mean is available throughout the entire application
+  providedIn: 'root',
 })
-
-// to be possible to automatically import it, we need the Injectable decorator
 export class EventService {
   private subject = new Subject();
 

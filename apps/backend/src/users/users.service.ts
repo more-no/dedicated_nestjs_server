@@ -78,30 +78,6 @@ export class UsersService {
     }
   }
 
-  async adminRemove(userId: number): Promise<number> {
-    try {
-      const userDeleted = await this.prisma.user.delete({
-        where: { id: userId },
-      });
-
-      if (!userDeleted) {
-        throw new BadRequestException('Could not delete the User');
-      }
-
-      const deletedSession = await this.prisma.session.deleteMany({
-        where: { user_id: userId },
-      });
-
-      if (!deletedSession) {
-        throw new InternalServerErrorException('Error during deletion');
-      }
-
-      return userId;
-    } catch (error) {
-      throw new NotFoundException('Failed to find the User');
-    }
-  }
-
   async userRemove(userId: number, request: any): Promise<number> {
     try {
       const session = await this.prisma.session.findFirst({
@@ -115,9 +91,7 @@ export class UsersService {
       }
 
       const sessionToken = session.token;
-      console.log('Session Token', sessionToken);
       const requestToken = request.token;
-      console.log('Request Token', requestToken);
 
       if (sessionToken === requestToken) {
         const token = await this.jwtService.decode(requestToken);
@@ -143,7 +117,43 @@ export class UsersService {
         throw new UnauthorizedException('Unauthorized');
       }
     } catch (error) {
-      throw new InternalServerErrorException('Failed to delete');
+      throw new InternalServerErrorException(
+        `Failed to delete: ${error.message}`,
+      );
+    }
+  }
+
+  async adminRemove(userId: number): Promise<number> {
+    try {
+      const userDeleted = await this.prisma.user.delete({
+        where: { id: userId },
+      });
+
+      if (!userDeleted) {
+        throw new BadRequestException('Could not delete the User');
+      }
+
+      const deletedSession = await this.prisma.session.deleteMany({
+        where: { user_id: userId },
+      });
+
+      if (!deletedSession) {
+        throw new InternalServerErrorException('Error during deletion');
+      }
+
+      return userId;
+    } catch (error) {
+      throw new NotFoundException(`Failed to find the user: ${error.message}`);
+    }
+  }
+
+  async updateRoles(userId: number): Promise<number> {
+    try {
+      return 0;
+    } catch (error) {
+      throw new InternalServerErrorException(
+        `Failed to update the role: ${error.message}`,
+      );
     }
   }
 }

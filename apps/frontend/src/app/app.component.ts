@@ -10,7 +10,6 @@ export class AppComponent {
   constructor(private router: Router) {}
 
   goToContact() {
-    //  here we only added 'contact' but we could add strings and Angular would create an URL for us
     this.router.navigate(['contact']);
   }
 }

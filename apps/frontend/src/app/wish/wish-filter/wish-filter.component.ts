@@ -8,17 +8,13 @@ const filters = [
 ];
 
 @Component({
-  // delete the "app-"
   selector: 'wish-filter',
   templateUrl: './wish-filter.component.html',
   styleUrl: './wish-filter.component.sass',
 })
 export class WishFilterComponent implements OnInit {
   @Input() filter: any;
-  // the output must have the same name + Change
   @Output() filterChange = new EventEmitter<any>();
-
-  // we pass the initial value changeFilter - is it used on first mounting?
   ngOnInit(): void {
     this.updateFilter('0');
   }

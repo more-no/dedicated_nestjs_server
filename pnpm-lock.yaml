@@ -115,6 +115,9 @@ importers:
       prisma:
         specifier: ^5.8.1
         version: 5.8.1
+      rxjs:
+        specifier: ~7.8.0
+        version: 7.8.1
       source-map-support:
         specifier: ^0.5.21
         version: 0.5.21

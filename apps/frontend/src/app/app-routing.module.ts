@@ -9,14 +9,13 @@ import { ProductsListComponent } from './products/productsList/productsList.comp
 import { ProductDetailsComponentComponent } from './products/product-details-component/product-details-component.component';
 
 const routes: Routes = [
-  // the order of the routes is important  ==> '' must first and ** must be last
-  { path: '', component: FirstComponent }, // empty path is taken as homepage
+  { path: '', component: FirstComponent },
   { path: 'second', component: SecondComponent },
   { path: 'wish', component: WishComponent },
   { path: 'contact', component: ContactComponent },
   { path: 'products', component: ProductsListComponent },
   { path: 'products/:id', component: ProductDetailsComponentComponent },
-  { path: '**', component: NotFoundComponent }, // take-all for all non-existing paths
+  { path: '**', component: NotFoundComponent },
 ];
 
 @NgModule({

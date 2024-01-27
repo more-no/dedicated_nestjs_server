@@ -8,10 +8,9 @@ describe('WishComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [WishComponent]
-    })
-    .compileComponents();
-    
+      declarations: [WishComponent],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(WishComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

@@ -1,8 +1,6 @@
 <div class="container">
   <div class="row" *ngFor="let product of products">
     <h4>
-      <!-- in order to use the routerLink here we had to import the RouterModule also in product.module.ts ==> initially we had it only in app-routing.module -->
-      <!-- we needed to add a / before products, otherwise it would create a products/products/id for the URL  -->
       <a [routerLink]="['/products', product.id]">
         {{ product.name }} {{ product.price }}
       </a>

@@ -11,13 +11,18 @@ import { ProductsModule } from './products/products.module';
 
 @NgModule({
   declarations: [
-    // AppComponent is the entry point of our Module
     AppComponent,
     FirstComponent,
     SecondComponent,
     NotFoundComponent,
   ],
-  imports: [BrowserModule, AppRoutingModule, WishModule, ContactModule, ProductsModule],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    WishModule,
+    ContactModule,
+    ProductsModule,
+  ],
   providers: [],
   bootstrap: [AppComponent],
 })
