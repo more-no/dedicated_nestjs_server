@@ -26,16 +26,6 @@ export class UsersService {
 
   async update(id: number, updateUserDto: UpdateUserDto) {
     try {
-      const user = await this.prisma.user.findUnique({
-        where: {
-          id: id,
-        },
-      });
-
-      if (!user) {
-        throw new NotFoundException('User not found');
-      }
-
       const userUpdated = await this.prisma.user.update({
         where: {
           id: id,
@@ -90,11 +80,8 @@ export class UsersService {
         throw new NotFoundException('Session not found');
       }
 
-      const sessionToken = session.token;
-      const requestToken = request.token;
-
-      if (sessionToken === requestToken) {
-        const token = await this.jwtService.decode(requestToken);
+      if (session.token === request.token) {
+        const token = await this.jwtService.decode(request.token);
 
         const userDeleted = await this.prisma.user.deleteMany({
           where: { id: token.sub },
@@ -125,11 +112,11 @@ export class UsersService {
 
   async adminRemove(userId: number): Promise<number> {
     try {
-      const userDeleted = await this.prisma.user.delete({
+      const userToDelete = await this.prisma.user.delete({
         where: { id: userId },
       });
 
-      if (!userDeleted) {
+      if (!userToDelete) {
         throw new BadRequestException('Could not delete the User');
       }
 
@@ -147,9 +134,34 @@ export class UsersService {
     }
   }
 
-  async updateRoles(userId: number): Promise<number> {
+  async updateRole(userId: number, roleId: number): Promise<number> {
     try {
-      return 0;
+      const user = await this.prisma.user.findUnique({
+        where: { id: userId },
+        include: { user_role: true },
+      });
+
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+
+      const userRoleUpdated = await this.prisma.userRole.update({
+        where: {
+          user_id_role_id: {
+            user_id: user.id,
+            role_id: user.user_role[0].role_id,
+          },
+        },
+        data: {
+          role: { connect: { id: roleId } },
+        },
+      });
+
+      if (!userRoleUpdated) {
+        throw new NotFoundException('User not found');
+      }
+
+      return roleId;
     } catch (error) {
       throw new InternalServerErrorException(
         `Failed to update the role: ${error.message}`,

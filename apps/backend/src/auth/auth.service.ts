@@ -99,25 +99,24 @@ export class AuthService {
       user.user_role[0].role_id,
     );
 
-    const existingSession = await this.prisma.session.updateMany({
-      where: {
-        user_id: user.id,
-      },
+    const session = await this.prisma.session.create({
       data: {
         token: tokens.access_token,
         user_id: user.id,
       },
     });
 
-    if (!existingSession) {
-      const session = await this.prisma.session.create({
+    if (!session) {
+      const existingSession = await this.prisma.session.updateMany({
+        where: {
+          user_id: user.id,
+        },
         data: {
           token: tokens.access_token,
-          user_id: user.id,
         },
       });
 
-      if (!session) {
+      if (!existingSession) {
         throw new InternalServerErrorException('Error creating the session');
       }
     }

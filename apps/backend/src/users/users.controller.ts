@@ -64,8 +64,20 @@ export class UsersController {
     return await this.usersService.update(+id, updateUserDto);
   }
 
+  // reference https://docs.nestjs.com/controllers#request-object
+
   @UseGuards(AtGuard, RolesGuard)
-  @Delete('admin/remove/:id')
+  @UseInterceptors(TokenInterceptor)
+  @Delete(':id/remove')
+  @Roles(RolesEnum.User)
+  @ApiOkResponse({ description: 'User successfully deleted' })
+  @ApiUnauthorizedResponse({ description: 'Deletion failed' })
+  async userRemove(@Param('id') id, @Req() request: Request) {
+    return await this.usersService.userRemove(+id, request);
+  }
+
+  @UseGuards(AtGuard, RolesGuard)
+  @Delete('remove/:id')
   @Roles(RolesEnum.Admin)
   @ApiOkResponse({ description: 'User successfully deleted' })
   @ApiUnauthorizedResponse({ description: 'Deletion failed' })
@@ -73,15 +85,12 @@ export class UsersController {
     return await this.usersService.adminRemove(+id);
   }
 
-  // reference https://docs.nestjs.com/controllers#request-object
-
   @UseGuards(AtGuard, RolesGuard)
-  @UseInterceptors(TokenInterceptor)
-  @Delete('remove/:id')
-  @Roles(RolesEnum.User)
-  @ApiOkResponse({ description: 'User successfully deleted' })
-  @ApiUnauthorizedResponse({ description: 'Deletion failed' })
-  async userRemove(@Param('id') id, @Req() request: Request) {
-    return await this.usersService.userRemove(+id, request);
+  @Patch('role/:id')
+  @Roles(RolesEnum.Admin)
+  @ApiOkResponse({ description: 'Role successfully updated' })
+  @ApiUnauthorizedResponse({ description: 'Update failed' })
+  async updateRole(@Param('id') id: string, @Body('roleId') roleId: number) {
+    return await this.usersService.updateRole(+id, +roleId);
   }
 }
