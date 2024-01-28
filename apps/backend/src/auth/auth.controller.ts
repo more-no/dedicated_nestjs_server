@@ -1,7 +1,7 @@
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Public, GetCurrentUser, GetCurrentUserId } from '../common/decorators';
-import { AuthSignupDto, AuthLoginDto } from './dto/auth.dto';
+import { AuthSignupDto, AuthLoginDto } from './dto';
 import { AtGuard, RtGuard } from '../common/guards';
 import { Tokens } from '../common/types';
 import {

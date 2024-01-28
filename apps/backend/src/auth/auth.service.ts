@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
-import { AuthSignupDto, AuthLoginDto } from './dto/auth.dto';
+import { AuthSignupDto, AuthLoginDto } from './dto';
 import { Tokens, UserCreateInput } from '../common/types';
 import { getTokens, updateRtHash } from '../common/utils';
 
@@ -99,19 +99,19 @@ export class AuthService {
       user.user_role[0].role_id,
     );
 
-    const session = await this.prisma.session.create({
-      data: {
-        token: tokens.access_token,
-        user_id: user.id,
-      },
+    const existingSession = await this.prisma.session.findFirst({
+      where: { user_id: user.id },
     });
 
-    if (!session) {
-      const existingSession = await this.prisma.session.updateMany({
-        where: {
-          user_id: user.id,
-        },
+    if (existingSession) {
+      await updateRtHash(user.id, tokens.refresh_token);
+      return tokens;
+    }
+
+    if (!existingSession) {
+      const existingSession = await this.prisma.session.create({
         data: {
+          user_id: user.id,
           token: tokens.access_token,
         },
       });

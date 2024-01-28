@@ -42,7 +42,7 @@ export class UsersController {
     @UploadedFile(SharpPipe) filename: string,
   ) {
     const result = await this.usersService.upload(+userId, filename);
-    return result;
+    return [userId, filename];
   }
 
   // @Get()
@@ -75,6 +75,8 @@ export class UsersController {
   async userRemove(@Param('id') id, @Req() request: Request) {
     return await this.usersService.userRemove(+id, request);
   }
+
+  // Admin endpoints
 
   @UseGuards(AtGuard, RolesGuard)
   @Delete('remove/:id')
