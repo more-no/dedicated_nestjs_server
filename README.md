@@ -26,7 +26,7 @@ pnpm install
 
 #### Create an .env file following the example
 
-#### Allow Postgres user CREATEDB privilege (for Prisma Shadow Database - <https://www.prisma.io/docs/orm/prisma-migrate/understanding-prisma-migrate/shadow-database#shadow-database-user-permissions>)
+#### Allow Postgres user CREATEDB privilege (for Prisma Shadow Database)
 
 ```sql
 ALTER ROLE username WITH CREATEDB;
