@@ -10,6 +10,7 @@ const config = new ConfigService();
 
 class Seeder {
   async seed() {
+    // create roles
     await prisma.role.createMany({
       data: [
         { role_name: 'Admin', description: 'Administrator role' },
@@ -27,6 +28,7 @@ class Seeder {
       where: { role_name: 'Admin' },
     });
 
+    // create admin user
     await prisma.user.create({
       data: {
         username: 'admin',
@@ -47,8 +49,6 @@ class Seeder {
 }
 
 async function main() {
-  const prisma = new PrismaClient();
-
   const seeder = new Seeder();
   await seeder.seed();
 

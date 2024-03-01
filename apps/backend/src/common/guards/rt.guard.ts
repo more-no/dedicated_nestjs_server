@@ -1,7 +1,5 @@
+import { Injectable } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
-export class RtGuard extends AuthGuard('jwt-refresh') {
-  constructor() {
-    super();
-  }
-}
+@Injectable() // added the Injectable decorator, while not strictly necessary is considered good practice..
+export class RtGuard extends AuthGuard('jwt-refresh') {}

@@ -12,10 +12,14 @@
   - Update info
   - Delete own profile
 
+- Editor:
+
+  - Same as the User, but not allowed to upload pictures
+
 - Admin:
 
-  - Delete profiles
-  - Change user role
+  - Delete any profiles
+  - Change the role of any profile
 
 ## Tech
 
@@ -31,13 +35,13 @@
 
 ### Clone the repo
 
-```
+```sh
 git clone <url>
 ```
 
 ### Install dependencies
 
-```
+```sh
 pnpm install
 ```
 
@@ -61,7 +65,7 @@ ALTER ROLE username WITH CREATEDB;
 
 ### Apply migrations and seed
 
-```
+```sh
 npx prisma migrate dev
 npx prisma db seed
 ```
@@ -70,7 +74,7 @@ npx prisma db seed
 
 ### Development
 
-```
+```sh
 pnpm run dev
 ```
 
@@ -78,13 +82,13 @@ pnpm run dev
 
 ### Build
 
-```
+```sh
 pnpm run build
 ```
 
 ### Prisma Studio
 
-```
+```sh
 pnpm prisma studio
 ```
 

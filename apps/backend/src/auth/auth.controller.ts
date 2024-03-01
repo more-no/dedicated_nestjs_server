@@ -3,7 +3,6 @@ import { AuthService } from './auth.service';
 import { Public, GetCurrentUser, GetCurrentUserId } from '../common/decorators';
 import { AuthSignupDto, AuthLoginDto } from './dto';
 import { AtGuard, RtGuard } from '../common/guards';
-import { Tokens } from '../common/types';
 import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
@@ -11,6 +10,10 @@ import {
   ApiOkResponse,
   ApiTags,
 } from '@nestjs/swagger';
+
+// A controller's purpose is to receive specific requests for the application. The routing mechanism controls which controller receives which requests. Frequently, each controller has more than one route, and different routes can perform different actions.
+
+// In order to create a basic controller, we use classes and decorators. Decorators associate classes with required metadata and enable Nest to create a routing map (tie requests to the corresponding controllers).
 
 @ApiTags('auth')
 @Controller('auth')
@@ -21,7 +24,7 @@ export class AuthController {
   @Post('signup')
   @ApiCreatedResponse({ description: 'User successfully created' })
   @ApiBadRequestResponse({ description: 'Registration failed' })
-  signup(@Body() dto: AuthSignupDto): Promise<Tokens> {
+  signup(@Body() dto: AuthSignupDto) {
     return this.authService.signup(dto);
   }
 
@@ -29,7 +32,7 @@ export class AuthController {
   @Post('login')
   @ApiOkResponse({ description: 'User successfully logged in' })
   @ApiForbiddenResponse({ description: 'Access denied' })
-  login(@Body() dto: AuthLoginDto): Promise<Tokens> {
+  login(@Body() dto: AuthLoginDto) {
     return this.authService.login(dto);
   }
 
@@ -37,11 +40,10 @@ export class AuthController {
   @Post('logout')
   @ApiOkResponse({ description: 'User successfully logged out' })
   @ApiBadRequestResponse({ description: 'User not found' })
-  logout(@GetCurrentUserId() userId: number): Promise<boolean> {
+  logout(@GetCurrentUserId() userId: number) {
     return this.authService.logout(userId);
   }
 
-  @Public()
   @UseGuards(RtGuard)
   @Post('refresh')
   @ApiOkResponse({ description: 'Token successfully refreshed' })
@@ -49,7 +51,7 @@ export class AuthController {
   refreshTokens(
     @GetCurrentUserId() userId: number,
     @GetCurrentUser('refreshToken') refreshToken: string,
-  ): Promise<Tokens> {
+  ) {
     return this.authService.refreshTokens(userId, refreshToken);
   }
 }

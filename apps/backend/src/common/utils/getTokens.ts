@@ -30,19 +30,14 @@ export async function getTokens(
   };
 
   const [at, rt] = await Promise.all([
-    jwtService.signAsync(
-      // verification accessToken
-      jwtPayload,
-      { secret: config.get<string>('AT_SECRET'), expiresIn: 60 * 120 },
-    ),
-    jwtService.signAsync(
-      // verification refreshToken
-      jwtPayload,
-      {
-        secret: config.get<string>('RT_SECRET'),
-        expiresIn: 60 * 60 * 24,
-      },
-    ),
+    jwtService.signAsync(jwtPayload, {
+      secret: config.get<string>('AT_SECRET'),
+      expiresIn: 60 * 120,
+    }),
+    jwtService.signAsync(jwtPayload, {
+      secret: config.get<string>('RT_SECRET'),
+      expiresIn: 60 * 60 * 24,
+    }),
   ]);
 
   return { access_token: at, refresh_token: rt };

@@ -89,8 +89,9 @@ export class AuthService {
       user.password_hash,
     );
 
-    if (!passwordMatches)
+    if (!passwordMatches) {
       throw new ForbiddenException('Invalid username or password.');
+    }
 
     const tokens = await getTokens(
       user.id,
@@ -109,14 +110,14 @@ export class AuthService {
     }
 
     if (!existingSession) {
-      const existingSession = await this.prisma.session.create({
+      const newSession = await this.prisma.session.create({
         data: {
           user_id: user.id,
           token: tokens.access_token,
         },
       });
 
-      if (!existingSession) {
+      if (!newSession) {
         throw new InternalServerErrorException('Error creating the session');
       }
     }

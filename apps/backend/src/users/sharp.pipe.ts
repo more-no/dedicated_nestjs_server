@@ -10,13 +10,13 @@ import * as sharp from 'sharp';
 export class SharpPipe
   implements PipeTransform<Express.Multer.File, Promise<string>>
 {
+  // reference https://docs.nestjs.com/pipes#class-validator-integration
   async transform(image: Express.Multer.File): Promise<string> {
     try {
       const originalName = path.parse(image.originalname).name;
       const filename = Date.now() + '-' + originalName + '.webp';
 
       // reference https://sharp.pixelplumbing.com/api-constructor
-
       await sharp(image.buffer)
         .greyscale()
         .resize(600, 600, {
