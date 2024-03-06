@@ -76,12 +76,6 @@ export class UsersController {
     return await this.usersService.userRemove(+id, request);
   }
 
-  //   Subscription:
-  // When this.usersService.userRemove(...) is called in the userRemove method of your controller, the interceptor's observable returned by next.handle() is automatically subscribed to. This is because NestJS internally handles the subscription to the observable returned by the interceptor when it's used as an interceptor in a controller method. NestJS manages the execution flow and ensures that the interceptor's observable is properly handled.
-
-  // Execution Flow:
-  // The execution flow within NestJS ensures that the interceptor's observable is subscribed to, and its result (emitted by the observable) is awaited by the await keyword in the controller method (userRemove). Once the interceptor's observable emits a value, the execution continues with the result of this.usersService.userRemove(...).
-
   // Admin endpoints
 
   @UseGuards(AtGuard, RolesGuard)

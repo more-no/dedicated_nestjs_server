@@ -26,7 +26,6 @@ export class UsersService {
 
   // update user info
   async update(id: number, updateUserDto: UpdateUserDto) {
-    // try {
     const userUpdated = await this.prisma.user.update({
       where: {
         id: id,
@@ -47,9 +46,6 @@ export class UsersService {
       fullname: userUpdated.fullname,
       bio: userUpdated.bio,
     };
-    // } catch (error) {
-    //   throw new NotFoundException(`Failed to update user: ${error.message}`);
-    // }
   }
 
   // upload user picture

@@ -12,8 +12,6 @@ import { JwtPayload, JwtPayloadWithRt } from '../types';
 // refresh token strategy
 
 @Injectable()
-
-// here passport take care of the revalidation of the token
 export class RtStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
   constructor(config: ConfigService) {
     super({
@@ -24,7 +22,6 @@ export class RtStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
   }
 
   validate(req: Request, payload: JwtPayload): JwtPayloadWithRt {
-    // added extra check and relative exception
     const authorizationHeader = req?.headers?.authorization;
     if (!authorizationHeader) {
       throw new UnauthorizedException('Authorization header is missing');

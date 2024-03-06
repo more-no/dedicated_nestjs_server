@@ -126,7 +126,7 @@ export class AuthService {
     return tokens;
   }
 
-  async logout(userId: number): Promise<boolean> {
+  async logout(userId): Promise<boolean> {
     const userLoggedOut = await this.prisma.user.updateMany({
       where: {
         id: userId,

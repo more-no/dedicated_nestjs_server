@@ -3,7 +3,6 @@ import { JwtPayload } from '../../common/types';
 
 export const GetCurrentUserId = createParamDecorator(
   (_: string | undefined, context: ExecutionContext): number => {
-    // Get the user id from the request object
     const request = context.switchToHttp().getRequest();
 
     const user = request.user as JwtPayload;

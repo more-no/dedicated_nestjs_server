@@ -3,7 +3,6 @@ import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 
 // reference https://www.prisma.io/docs/orm/prisma-migrate/workflows/seeding
-// seed with 'npx prisma db seed'
 
 const prisma = new PrismaClient();
 const config = new ConfigService();
