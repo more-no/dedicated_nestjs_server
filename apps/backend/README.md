@@ -35,13 +35,13 @@
 
 ### Clone the repo
 
-```sh
+```bash
 git clone <url>
 ```
 
 ### Install dependencies
 
-```sh
+```bash
 pnpm install
 ```
 
@@ -65,7 +65,7 @@ ALTER ROLE username WITH CREATEDB;
 
 ### Apply migrations and seed
 
-```sh
+```bash
 npx prisma migrate dev
 npx prisma db seed
 ```
@@ -74,7 +74,7 @@ npx prisma db seed
 
 ### Development
 
-```sh
+```bash
 pnpm run dev
 ```
 
@@ -82,13 +82,13 @@ pnpm run dev
 
 ### Build
 
-```sh
+```bash
 pnpm run build
 ```
 
 ### Prisma Studio
 
-```sh
+```bash
 pnpm prisma studio
 ```
 
