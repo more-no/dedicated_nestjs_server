@@ -79,7 +79,7 @@ export class UsersController {
     @Param('id', ParseIntPipe) id: number,
     @Body() updateUserDto: UpdateUserDto,
   ) {
-    return await this.usersService.update(id, updateUserDto);
+    return new UserEntity(await this.usersService.update(id, updateUserDto));
   }
 
   // reference https://docs.nestjs.com/controllers#request-object
