@@ -36,9 +36,9 @@ import { UserEntity } from './entities/user.entity';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  // @UseGuards(AtGuard, RolesGuard)
+  @UseGuards(AtGuard, RolesGuard)
   @Get('findAll')
-  // @Roles(RolesEnum.Admin)
+  @Roles(RolesEnum.Admin)
   @ApiOkResponse({ description: 'Users successfully retrieved' })
   @ApiBadRequestResponse({ description: 'Users not found' })
   async findAll() {
