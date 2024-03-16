@@ -49,18 +49,24 @@ export class UsersService {
   }
 
   // upload user picture
-  async upload(userId: number, pictureUrl: string): Promise<UploadResultDto> {
+  async upload(
+    userId: number,
+    uploadResultDto: UploadResultDto,
+  ): Promise<UploadResultDto> {
     try {
       const userUpdated = await this.prisma.user.update({
         where: { id: userId },
-        data: { picture_url: pictureUrl },
+        data: { picture_url: uploadResultDto.filename },
       });
 
       if (!userUpdated) {
         throw new BadRequestException('Could not upload');
       }
 
-      return { userId, filename: pictureUrl };
+      return {
+        userId: uploadResultDto.userId,
+        filename: uploadResultDto.filename,
+      };
     } catch (error) {
       throw new NotFoundException(`Failed to upload: ${error.message}`);
     }
