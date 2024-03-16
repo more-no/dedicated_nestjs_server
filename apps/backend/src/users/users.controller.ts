@@ -10,12 +10,15 @@ import {
   UseGuards,
   Req,
   ParseIntPipe,
+  Get,
+  ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto, UploadResultDto } from './dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { SharpPipe } from './sharp.pipe';
 import {
+  ApiBadRequestResponse,
   ApiOkResponse,
   ApiTags,
   ApiUnauthorizedResponse,
@@ -25,11 +28,32 @@ import { RolesEnum } from '@prisma/client';
 import { Roles } from '../common/decorators';
 import { Request } from 'express';
 import { TokenInterceptor } from '../common/interceptors/token.interceptor';
+import { UserEntity } from './entities/user.entity';
 
 @ApiTags('users')
 @Controller('users')
+@UseInterceptors(ClassSerializerInterceptor)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
+
+  // @UseGuards(AtGuard, RolesGuard)
+  @Get('findAll')
+  // @Roles(RolesEnum.Admin)
+  @ApiOkResponse({ description: 'Users successfully retrieved' })
+  @ApiBadRequestResponse({ description: 'Users not found' })
+  async findAll() {
+    const users = await this.usersService.findAll();
+    return users.map((user) => new UserEntity(user));
+  }
+
+  @UseGuards(AtGuard, RolesGuard)
+  @Get(':id')
+  @Roles(RolesEnum.Admin)
+  @ApiOkResponse({ description: 'User successfully retrieved' })
+  @ApiBadRequestResponse({ description: 'User not found' })
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    return new UserEntity(await this.usersService.findOne(id));
+  }
 
   // reference https://docs.nestjs.com/techniques/file-upload
   @UseGuards(AtGuard, RolesGuard)
@@ -43,18 +67,8 @@ export class UsersController {
     @UploadedFile(SharpPipe) uploadResultDto: UploadResultDto,
   ) {
     const result = await this.usersService.upload(userId, uploadResultDto);
-    return [userId, uploadResultDto.filename];
+    return [uploadResultDto.userId, uploadResultDto.filename];
   }
-
-  // @Get()
-  // findAll() {
-  //   return this.usersService.findAll();
-  // }
-
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.usersService.findOne(+id);
-  // }
 
   @UseGuards(AtGuard, RolesGuard)
   @Patch(':id/update')

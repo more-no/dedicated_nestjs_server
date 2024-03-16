@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -8,6 +9,7 @@ import {
 import { PrismaService } from '../../prisma/prisma.service';
 import { UpdateUserDto, UploadResultDto } from './dto';
 import { JwtService } from '@nestjs/jwt';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
@@ -16,16 +18,30 @@ export class UsersService {
     private jwtService: JwtService,
   ) {}
 
-  // findAll() {
-  //   return `This action returns all users`;
-  // }
+  async findAll(): Promise<User[]> {
+    const users = await this.prisma.user.findMany();
 
-  // findOne(id: number) {
-  //   return `This action returns a #${id} user`;
-  // }
+    if (!users) {
+      throw new ForbiddenException('Error retrieving the Users.');
+    }
+    return users;
+  }
+
+  async findOne(id: number): Promise<User> {
+    const user = await this.prisma.user.findUniqueOrThrow({
+      where: {
+        id: id,
+      },
+    });
+
+    return user;
+  }
 
   // update user info
-  async update(id: number, updateUserDto: UpdateUserDto) {
+  async update(
+    id: number,
+    updateUserDto: UpdateUserDto,
+  ): Promise<UpdateUserDto> {
     const userUpdated = await this.prisma.user.update({
       where: {
         id: id,
