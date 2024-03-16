@@ -9,6 +9,7 @@ import {
   UploadedFile,
   UseGuards,
   Req,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto, UploadResultDto } from './dto';
@@ -38,10 +39,10 @@ export class UsersController {
   @ApiUnauthorizedResponse({ description: 'Upload failed' })
   @UseInterceptors(FileInterceptor('image'))
   async upload(
-    @Param('id') userId: string,
+    @Param('id', ParseIntPipe) userId: number,
     @UploadedFile(SharpPipe) uploadResultDto: UploadResultDto,
   ) {
-    const result = await this.usersService.upload(+userId, uploadResultDto);
+    const result = await this.usersService.upload(userId, uploadResultDto);
     return [userId, uploadResultDto.filename];
   }
 
@@ -60,8 +61,11 @@ export class UsersController {
   @Roles(RolesEnum.User, RolesEnum.Editor)
   @ApiOkResponse({ description: 'User successfully updated' })
   @ApiUnauthorizedResponse({ description: 'Update failed' })
-  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return await this.usersService.update(+id, updateUserDto);
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
+    return await this.usersService.update(id, updateUserDto);
   }
 
   // reference https://docs.nestjs.com/controllers#request-object
@@ -72,8 +76,11 @@ export class UsersController {
   @Roles(RolesEnum.User)
   @ApiOkResponse({ description: 'User successfully deleted' })
   @ApiUnauthorizedResponse({ description: 'Deletion failed' })
-  async userRemove(@Param('id') id, @Req() request: Request) {
-    return await this.usersService.userRemove(+id, request);
+  async userRemove(
+    @Param('id', ParseIntPipe) id: number,
+    @Req() request: Request,
+  ) {
+    return await this.usersService.userRemove(id, request);
   }
 
   // Admin endpoints
@@ -83,8 +90,8 @@ export class UsersController {
   @Roles(RolesEnum.Admin)
   @ApiOkResponse({ description: 'User successfully deleted' })
   @ApiUnauthorizedResponse({ description: 'Deletion failed' })
-  async adminRemove(@Param('id') id: string) {
-    return await this.usersService.adminRemove(+id);
+  async adminRemove(@Param('id', ParseIntPipe) id: number) {
+    return await this.usersService.adminRemove(id);
   }
 
   @UseGuards(AtGuard, RolesGuard)
@@ -92,7 +99,10 @@ export class UsersController {
   @Roles(RolesEnum.Admin)
   @ApiOkResponse({ description: 'Role successfully updated' })
   @ApiUnauthorizedResponse({ description: 'Update failed' })
-  async updateRole(@Param('id') id: string, @Body('roleId') roleId: number) {
-    return await this.usersService.updateRole(+id, +roleId);
+  async updateRole(
+    @Param('id', ParseIntPipe) id: number,
+    @Body('roleId', ParseIntPipe) roleId: number,
+  ) {
+    return await this.usersService.updateRole(id, roleId);
   }
 }
