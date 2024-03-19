@@ -22,9 +22,8 @@ export class AuthService {
       },
     });
 
-    if (existingUser) {
+    if (existingUser)
       throw new ForbiddenException('Username or email already exists.');
-    }
 
     const newUser = await this.prisma.user.create({
       data: {
@@ -46,9 +45,8 @@ export class AuthService {
       },
     });
 
-    if (!newUser) {
+    if (!newUser)
       throw new InternalServerErrorException('Error creating the user');
-    }
 
     const tokens = await getTokens(
       newUser.id,
@@ -64,9 +62,8 @@ export class AuthService {
       },
     });
 
-    if (!session) {
+    if (!session)
       throw new InternalServerErrorException('Error creating the session');
-    }
 
     await updateRtHash(newUser.id, tokens.refresh_token);
     return tokens;
@@ -82,18 +79,15 @@ export class AuthService {
       },
     });
 
-    if (!user) {
-      throw new ForbiddenException('Invalid username or password.');
-    }
+    if (!user) throw new ForbiddenException('Invalid username or password.');
 
     const passwordMatches = await bcrypt.compare(
       dto.password,
       user.password_hash,
     );
 
-    if (!passwordMatches) {
+    if (!passwordMatches)
       throw new ForbiddenException('Invalid username or password.');
-    }
 
     const tokens = await getTokens(
       user.id,
@@ -119,9 +113,8 @@ export class AuthService {
         },
       });
 
-      if (!newSession) {
+      if (!newSession)
         throw new InternalServerErrorException('Error creating the session');
-      }
     }
 
     await updateRtHash(user.id, tokens.refresh_token);
@@ -141,17 +134,15 @@ export class AuthService {
       },
     });
 
-    if (!userLoggedOut) {
+    if (!userLoggedOut)
       throw new InternalServerErrorException('Error during logout');
-    }
 
     const deletedSession = await this.prisma.session.deleteMany({
       where: { user_id: userId },
     });
 
-    if (!deletedSession) {
+    if (!deletedSession)
       throw new InternalServerErrorException('Error during logout');
-    }
 
     return true;
   }
@@ -171,9 +162,7 @@ export class AuthService {
 
     const rtMatches = await bcrypt.compare(rt, user.refresh_token);
 
-    if (!rtMatches) {
-      throw new ForbiddenException('Invalid token.');
-    }
+    if (!rtMatches) throw new ForbiddenException('Invalid token.');
 
     const tokens = await getTokens(
       user.id,

@@ -50,7 +50,7 @@ export class UsersController {
 
   @Get(':id')
   @UseGuards(AtGuard, RolesGuard)
-  @Roles(RolesEnum.Admin)
+  @Roles(RolesEnum.User, RolesEnum.Admin)
   @ApiOkResponse({ description: 'User successfully retrieved' })
   @ApiBadRequestResponse({ description: 'User not found' })
   async findOne(@Param('id', ParseIntPipe) id: number) {

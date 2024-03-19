@@ -6,21 +6,38 @@ import {
   Patch,
   Param,
   Delete,
+  ParseIntPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/createPost.dto';
 import { UpdatePostDto } from './dto/updatePost.dto';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOkResponse,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
+import { AtGuard, RolesGuard } from 'common/guards';
+import { RolesEnum } from '@prisma/client';
+import { Roles } from 'common/decorators';
 
 @ApiTags('posts')
 @ApiBearerAuth()
 @Controller('posts')
 export class PostsController {
-  constructor(private readonly postsService: PostsService) {}
+  constructor(private postsService: PostsService) {}
 
-  @Post()
-  create(@Body() createPostDto: CreatePostDto) {
-    return this.postsService.create(createPostDto);
+  @Post(':id/create')
+  @UseGuards(AtGuard, RolesGuard)
+  @Roles(RolesEnum.User)
+  @ApiOkResponse({ description: 'Post successfully created' })
+  @ApiUnauthorizedResponse({ description: 'Post creation failed' })
+  async create(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() createPostDto: CreatePostDto,
+  ) {
+    return this.postsService.createPost(id, createPostDto);
   }
 
   @Get()

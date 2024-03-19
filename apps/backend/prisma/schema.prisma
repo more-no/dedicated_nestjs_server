@@ -22,9 +22,9 @@ model User {
   refresh_token      String?    @db.VarChar(80)
   post_count         Int        @default(0)
   comment_count      Int        @default(0)
-  user_subscriptions Int        @default(0)
   session            Session[]
   user_role          UserRole[]
+  post               Post[]
 
     @@map("users")
 }
@@ -36,6 +36,7 @@ model Post {
   body               String     @db.VarChar(300)
   created_at         DateTime   @default(now()) @db.Timestamp(3)
   updated_at         DateTime   @default(now()) @db.Timestamp(3)    // @updatedAt
+  user    User @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }
 
 model Session {

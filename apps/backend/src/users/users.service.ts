@@ -34,9 +34,8 @@ export class UsersService {
       },
     });
 
-    if (!users) {
-      throw new ForbiddenException('Error retrieving the Users.');
-    }
+    if (!users) throw new ForbiddenException('Error retrieving the Users.');
+
     return users;
   }
 
@@ -45,7 +44,12 @@ export class UsersService {
       where: {
         id: id,
       },
+      include: {
+        post: true,
+      },
     });
+
+    if (!user) throw new NotFoundException('User not found');
 
     return user;
   }
@@ -66,9 +70,7 @@ export class UsersService {
       },
     });
 
-    if (!userUpdated) {
-      throw new BadRequestException('Could not update');
-    }
+    if (!userUpdated) throw new BadRequestException('Could not update');
 
     return {
       username: userUpdated.username,
@@ -88,9 +90,7 @@ export class UsersService {
         data: { picture_url: uploadResultDto.filename },
       });
 
-      if (!userUpdated) {
-        throw new BadRequestException('Could not upload');
-      }
+      if (!userUpdated) throw new BadRequestException('Could not upload');
 
       return {
         userId: uploadResultDto.userId,
@@ -120,17 +120,15 @@ export class UsersService {
         where: { id: token.sub },
       });
 
-      if (!userDeleted) {
+      if (!userDeleted)
         throw new InternalServerErrorException('Could not delete the User');
-      }
 
       const deletedSession = await this.prisma.session.deleteMany({
         where: { user_id: userId },
       });
 
-      if (!deletedSession) {
+      if (!deletedSession)
         throw new InternalServerErrorException('Error during deletion');
-      }
 
       return userId;
     } else {
@@ -144,17 +142,14 @@ export class UsersService {
       where: { id: userId },
     });
 
-    if (!userToDelete) {
-      throw new NotFoundException('Failed to find the user');
-    }
+    if (!userToDelete) throw new NotFoundException('Failed to find the user');
 
     const deletedSession = await this.prisma.session.deleteMany({
       where: { user_id: userId },
     });
 
-    if (!deletedSession) {
+    if (!deletedSession)
       throw new InternalServerErrorException('Error during deletion');
-    }
 
     return userId;
   }
@@ -166,9 +161,7 @@ export class UsersService {
       include: { user_role: true },
     });
 
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
+    if (!user) throw new NotFoundException('User not found');
 
     const userRoleUpdated = await this.prisma.userRole.update({
       where: {
@@ -182,9 +175,7 @@ export class UsersService {
       },
     });
 
-    if (!userRoleUpdated) {
-      throw new NotFoundException('User not found');
-    }
+    if (!userRoleUpdated) throw new NotFoundException('User not found');
 
     return roleId;
   }
