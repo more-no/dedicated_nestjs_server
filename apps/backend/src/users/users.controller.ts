@@ -19,6 +19,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { SharpPipe } from './sharp.pipe';
 import {
   ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiOkResponse,
   ApiTags,
   ApiUnauthorizedResponse,
@@ -31,13 +32,15 @@ import { TokenInterceptor } from '../common/interceptors/token.interceptor';
 import { UserEntity } from './entities/user.entity';
 
 @ApiTags('users')
+@ApiBearerAuth()
 @Controller('users')
 @UseInterceptors(ClassSerializerInterceptor)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @UseGuards(AtGuard, RolesGuard)
   @Get('findAll')
+  @UseGuards(AtGuard, RolesGuard)
+  // @ApiBearerAuth()
   @Roles(RolesEnum.Admin)
   @ApiOkResponse({ description: 'Users successfully retrieved' })
   @ApiBadRequestResponse({ description: 'Users not found' })
@@ -46,8 +49,9 @@ export class UsersController {
     return users.map((user) => new UserEntity(user));
   }
 
-  @UseGuards(AtGuard, RolesGuard)
   @Get(':id')
+  @UseGuards(AtGuard, RolesGuard)
+  // @ApiBearerAuth()
   @Roles(RolesEnum.Admin)
   @ApiOkResponse({ description: 'User successfully retrieved' })
   @ApiBadRequestResponse({ description: 'User not found' })
@@ -56,8 +60,9 @@ export class UsersController {
   }
 
   // reference https://docs.nestjs.com/techniques/file-upload
-  @UseGuards(AtGuard, RolesGuard)
   @Post(':id/upload')
+  @UseGuards(AtGuard, RolesGuard)
+  // @ApiBearerAuth()
   @Roles(RolesEnum.User)
   @ApiOkResponse({ description: 'User picture successfully uploaded' })
   @ApiUnauthorizedResponse({ description: 'Upload failed' })
@@ -70,8 +75,9 @@ export class UsersController {
     return [uploadResultDto.userId, uploadResultDto.filename];
   }
 
-  @UseGuards(AtGuard, RolesGuard)
   @Patch(':id/update')
+  @UseGuards(AtGuard, RolesGuard)
+  // @ApiBearerAuth()
   @Roles(RolesEnum.User, RolesEnum.Editor)
   @ApiOkResponse({ description: 'User successfully updated' })
   @ApiUnauthorizedResponse({ description: 'Update failed' })
@@ -84,8 +90,9 @@ export class UsersController {
 
   // reference https://docs.nestjs.com/controllers#request-object
 
-  @UseGuards(AtGuard, RolesGuard)
   @UseInterceptors(TokenInterceptor)
+  @UseGuards(AtGuard, RolesGuard)
+  // @ApiBearerAuth()
   @Delete(':id/remove')
   @Roles(RolesEnum.User)
   @ApiOkResponse({ description: 'User successfully deleted' })
@@ -99,8 +106,9 @@ export class UsersController {
 
   // Admin endpoints
 
-  @UseGuards(AtGuard, RolesGuard)
   @Delete('remove/:id')
+  @UseGuards(AtGuard, RolesGuard)
+  // @ApiBearerAuth()
   @Roles(RolesEnum.Admin)
   @ApiOkResponse({ description: 'User successfully deleted' })
   @ApiUnauthorizedResponse({ description: 'Deletion failed' })
@@ -108,8 +116,9 @@ export class UsersController {
     return await this.usersService.adminRemove(id);
   }
 
-  @UseGuards(AtGuard, RolesGuard)
   @Patch('role/:id')
+  @UseGuards(AtGuard, RolesGuard)
+  // @ApiBearerAuth()
   @Roles(RolesEnum.Admin)
   @ApiOkResponse({ description: 'Role successfully updated' })
   @ApiUnauthorizedResponse({ description: 'Update failed' })
