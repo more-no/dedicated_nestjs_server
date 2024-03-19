@@ -27,9 +27,9 @@ import {
 import { AtGuard, RolesGuard } from '../common/guards';
 import { RolesEnum } from '@prisma/client';
 import { Roles } from '../common/decorators';
-import { Request } from 'express';
 import { TokenInterceptor } from '../common/interceptors/token.interceptor';
 import { UserEntity } from './entities/user.entity';
+import { CustomRequest } from 'common/types';
 
 @ApiTags('users')
 @ApiBearerAuth()
@@ -38,31 +38,28 @@ import { UserEntity } from './entities/user.entity';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Get('findAll')
+  @Get('getUsers')
   @UseGuards(AtGuard, RolesGuard)
-  // @ApiBearerAuth()
   @Roles(RolesEnum.Admin)
   @ApiOkResponse({ description: 'Users successfully retrieved' })
   @ApiBadRequestResponse({ description: 'Users not found' })
   async findAll() {
-    const users = await this.usersService.findAll();
+    const users = await this.usersService.getUsers();
     return users.map((user) => new UserEntity(user));
   }
 
   @Get(':id')
   @UseGuards(AtGuard, RolesGuard)
-  // @ApiBearerAuth()
   @Roles(RolesEnum.Admin)
   @ApiOkResponse({ description: 'User successfully retrieved' })
   @ApiBadRequestResponse({ description: 'User not found' })
   async findOne(@Param('id', ParseIntPipe) id: number) {
-    return new UserEntity(await this.usersService.findOne(id));
+    return new UserEntity(await this.usersService.getUserById(id));
   }
 
   // reference https://docs.nestjs.com/techniques/file-upload
   @Post(':id/upload')
   @UseGuards(AtGuard, RolesGuard)
-  // @ApiBearerAuth()
   @Roles(RolesEnum.User)
   @ApiOkResponse({ description: 'User picture successfully uploaded' })
   @ApiUnauthorizedResponse({ description: 'Upload failed' })
@@ -77,7 +74,6 @@ export class UsersController {
 
   @Patch(':id/update')
   @UseGuards(AtGuard, RolesGuard)
-  // @ApiBearerAuth()
   @Roles(RolesEnum.User, RolesEnum.Editor)
   @ApiOkResponse({ description: 'User successfully updated' })
   @ApiUnauthorizedResponse({ description: 'Update failed' })
@@ -92,14 +88,13 @@ export class UsersController {
 
   @UseInterceptors(TokenInterceptor)
   @UseGuards(AtGuard, RolesGuard)
-  // @ApiBearerAuth()
   @Delete(':id/remove')
   @Roles(RolesEnum.User)
   @ApiOkResponse({ description: 'User successfully deleted' })
   @ApiUnauthorizedResponse({ description: 'Deletion failed' })
   async userRemove(
     @Param('id', ParseIntPipe) id: number,
-    @Req() request: Request,
+    @Req() request: CustomRequest,
   ) {
     return await this.usersService.userRemove(id, request);
   }
@@ -108,7 +103,6 @@ export class UsersController {
 
   @Delete('remove/:id')
   @UseGuards(AtGuard, RolesGuard)
-  // @ApiBearerAuth()
   @Roles(RolesEnum.Admin)
   @ApiOkResponse({ description: 'User successfully deleted' })
   @ApiUnauthorizedResponse({ description: 'Deletion failed' })
@@ -118,7 +112,6 @@ export class UsersController {
 
   @Patch('role/:id')
   @UseGuards(AtGuard, RolesGuard)
-  // @ApiBearerAuth()
   @Roles(RolesEnum.Admin)
   @ApiOkResponse({ description: 'Role successfully updated' })
   @ApiUnauthorizedResponse({ description: 'Update failed' })

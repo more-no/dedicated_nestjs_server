@@ -26,3 +26,10 @@ export type UserCreateInput = {
     };
   };
 };
+
+export type CustomRequest = {
+  headers: {
+    authorization: string;
+  };
+  token?: string;
+};

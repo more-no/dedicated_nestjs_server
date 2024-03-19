@@ -13,29 +13,6 @@ import { getTokens, updateRtHash } from '../common/utils';
 export class AuthService {
   constructor(private prisma: PrismaService) {}
 
-  // async findAll() {
-  //   const users = await this.prisma.user.findMany();
-
-  //   if (!users) {
-  //     throw new ForbiddenException('Error retrieving the Users.');
-  //   }
-  //   return users;
-  // }
-
-  // async findOne(id: number) {
-  //   const user = await this.prisma.user.findUniqueOrThrow({
-  //     where: {
-  //       id: id,
-  //     },
-  //   });
-
-  //   // if (!user) {
-  //   //   throw new ForbiddenException('Error retrieving the Users.');
-  //   // }
-
-  //   return user;
-  // }
-
   async signup(dto: AuthSignupDto): Promise<Tokens> {
     const hash = await bcrypt.hash(dto.password, 10);
 

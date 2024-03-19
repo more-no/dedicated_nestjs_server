@@ -4,6 +4,7 @@ import {
   ExecutionContext,
   CallHandler,
 } from '@nestjs/common';
+import { CustomRequest } from 'common/types';
 import { Observable } from 'rxjs';
 
 // reference https://docs.nestjs.com/interceptors#basics
@@ -12,7 +13,7 @@ import { Observable } from 'rxjs';
 @Injectable()
 export class TokenInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    const request = context.switchToHttp().getRequest();
+    const request: CustomRequest = context.switchToHttp().getRequest();
     const token = request.headers.authorization.split(' ')[1];
     request.token = token;
 

@@ -9,7 +9,8 @@ import {
 import { PrismaService } from '../../prisma/prisma.service';
 import { UpdateUserDto, UploadResultDto } from './dto';
 import { JwtService } from '@nestjs/jwt';
-import { User } from '@prisma/client';
+import { Prisma, User } from '@prisma/client';
+import { CustomRequest } from 'common/types';
 
 @Injectable()
 export class UsersService {
@@ -18,8 +19,16 @@ export class UsersService {
     private jwtService: JwtService,
   ) {}
 
-  async findAll(): Promise<User[]> {
-    const users = await this.prisma.user.findMany();
+  async getUsers(): Promise<User[]> {
+    const users = await this.prisma.user.findMany({
+      include: {
+        user_role: {
+          include: {
+            role: true,
+          },
+        },
+      },
+    });
 
     if (!users) {
       throw new ForbiddenException('Error retrieving the Users.');
@@ -27,7 +36,7 @@ export class UsersService {
     return users;
   }
 
-  async findOne(id: number): Promise<User> {
+  async getUserById(id: number): Promise<User> {
     const user = await this.prisma.user.findUniqueOrThrow({
       where: {
         id: id,
@@ -40,16 +49,16 @@ export class UsersService {
   // update user info
   async update(
     id: number,
-    updateUserDto: UpdateUserDto,
+    data: Prisma.UserUpdateInput,
   ): Promise<UpdateUserDto> {
     const userUpdated = await this.prisma.user.update({
       where: {
         id: id,
       },
       data: {
-        username: updateUserDto.username,
-        fullname: updateUserDto.fullname,
-        bio: updateUserDto.bio,
+        username: data.username,
+        fullname: data.fullname,
+        bio: data.bio,
       },
     });
 
@@ -89,7 +98,7 @@ export class UsersService {
   }
 
   // delete authenticated user and session
-  async userRemove(userId: number, request: any): Promise<number> {
+  async userRemove(userId: number, request: CustomRequest): Promise<number> {
     const session = await this.prisma.session.findFirst({
       where: {
         user_id: userId,
