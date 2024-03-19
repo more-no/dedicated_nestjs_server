@@ -8,9 +8,9 @@ export class UpdateUserDto {
 
   @IsString()
   @ApiProperty()
-  fullname: string;
+  fullname?: string;
 
   @IsString()
   @ApiProperty()
-  bio: string;
+  bio?: string;
 }

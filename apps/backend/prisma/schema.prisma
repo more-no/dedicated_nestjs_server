@@ -25,6 +25,17 @@ model User {
   user_subscriptions Int        @default(0)
   session            Session[]
   user_role          UserRole[]
+
+    @@map("users")
+}
+
+model Post {
+  id                 Int        @id @default(autoincrement())
+  user_id            Int        @map("user_id")
+  title              String 	  @db.VarChar(40)
+  body               String     @db.VarChar(300)
+  created_at         DateTime   @default(now()) @db.Timestamp(3)
+  updated_at         DateTime   @default(now()) @db.Timestamp(3)    // @updatedAt
 }
 
 model Session {

@@ -20,6 +20,18 @@ CREATE TABLE "users" (
 );
 
 -- CreateTable
+CREATE TABLE "Post" (
+    "id" SERIAL NOT NULL,
+    "user_id" INTEGER NOT NULL,
+    "title" VARCHAR(40) NOT NULL,
+    "body" VARCHAR(300) NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Post_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "Session" (
     "id" SERIAL NOT NULL,
     "token" TEXT NOT NULL,
