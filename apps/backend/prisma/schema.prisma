@@ -25,6 +25,7 @@ model User {
   session            Session[]
   user_role          UserRole[]
   post               Post[]
+  group_post         UserOnGroupPost[]
 
     @@map("users")
 }
@@ -35,23 +36,39 @@ model Post {
   title              String 	  @db.VarChar(40)
   body               String     @db.VarChar(300)
   created_at         DateTime   @default(now()) @db.Timestamp(3)
-  updated_at         DateTime   @default(now()) @db.Timestamp(3)    // @updatedAt
-  user    User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  updated_at         DateTime   @default(now()) @db.Timestamp(3)
+  user               User       @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
+
+model GroupPost {
+  id                 Int        @id @default(autoincrement())
+  title              String
+  body               String
+  user               UserOnGroupPost[]
+}
+
+model UserOnGroupPost {
+  user_id           Int
+  group_post_id     Int
+  group_post        GroupPost @relation(fields: [group_post_id], references: [id], onDelete: Cascade)
+  user              User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@id([user_id, group_post_id])
 }
 
 model Session {
-  id              Int      @id @default(autoincrement())
-  token           String   @unique
-  expiryTimestamp DateTime @default(dbgenerated("NOW() + interval '24 hours'")) @map("expiry_timestamp") @db.Timestamp(3)
-  user_id         Int      @map("user_id")
-  user            User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  id                   Int      @id @default(autoincrement())
+  token                String   @unique
+  expiry_time_stamp    DateTime @default(dbgenerated("NOW() + interval '24 hours'")) @map("expiry_timestamp") @db.Timestamp(3)
+  user_id              Int      @map("user_id")
+  user                 User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }
 
 model Role {
-  id          Int        @id @default(autoincrement())
-  role_name   RolesEnum
-  description String?
-  role        UserRole[]
+  id              Int        @id @default(autoincrement())
+  role_name       RolesEnum
+  description     String?
+  role            UserRole[]
 }
 
 enum RolesEnum {
@@ -63,8 +80,8 @@ enum RolesEnum {
 model UserRole {
   user_id Int
   role_id Int
-  user    User @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  role    Role @relation(fields: [role_id], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  role    Role    @relation(fields: [role_id], references: [id], onDelete: Cascade)
 
   @@id([user_id, role_id])
 }

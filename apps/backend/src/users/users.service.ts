@@ -15,8 +15,8 @@ import { CustomRequest } from 'common/types';
 @Injectable()
 export class UsersService {
   constructor(
-    private prisma: PrismaService,
     private jwtService: JwtService,
+    private prisma: PrismaService,
   ) {}
 
   async getUsers(): Promise<User[]> {

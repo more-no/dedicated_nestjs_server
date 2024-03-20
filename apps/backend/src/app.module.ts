@@ -7,6 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
 import { JwtModule } from '@nestjs/jwt';
 import { PostsModule } from './posts/posts.module';
+import { GroupPostModule } from './group-post/group-post.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { PostsModule } from './posts/posts.module';
     AuthModule,
     JwtModule,
     PostsModule,
+    GroupPostModule,
   ],
   controllers: [AppController],
   providers: [AppService],

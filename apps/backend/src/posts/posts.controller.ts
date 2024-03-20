@@ -28,6 +28,16 @@ import { Roles } from 'common/decorators';
 export class PostsController {
   constructor(private postsService: PostsService) {}
 
+  @Get()
+  findAll() {
+    return this.postsService.findAll();
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.postsService.findOne(+id);
+  }
+
   @Post(':id/create')
   @UseGuards(AtGuard, RolesGuard)
   @Roles(RolesEnum.User)
@@ -38,16 +48,6 @@ export class PostsController {
     @Body() createPostDto: CreatePostDto,
   ) {
     return this.postsService.createPost(id, createPostDto);
-  }
-
-  @Get()
-  findAll() {
-    return this.postsService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.postsService.findOne(+id);
   }
 
   @Patch(':id')
