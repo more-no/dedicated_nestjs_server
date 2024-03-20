@@ -21,6 +21,17 @@ export class GroupPostService {
       where: {
         id: id,
       },
+      include: {
+        user: {
+          select: {
+            user: {
+              select: {
+                username: true,
+              },
+            },
+          },
+        },
+      },
     });
 
     return groupPost;
