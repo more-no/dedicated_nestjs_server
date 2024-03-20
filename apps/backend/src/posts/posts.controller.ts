@@ -28,14 +28,22 @@ import { Roles } from 'common/decorators';
 export class PostsController {
   constructor(private postsService: PostsService) {}
 
-  @Get()
-  findAll() {
-    return this.postsService.findAll();
+  @Get('posts')
+  @UseGuards(AtGuard, RolesGuard)
+  @Roles(RolesEnum.User)
+  @ApiOkResponse({ description: 'Posts successfully retrieved' })
+  @ApiUnauthorizedResponse({ description: 'Posts not found' })
+  async findAllPosts() {
+    return this.postsService.findAllPosts();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.postsService.findOne(+id);
+  @UseGuards(AtGuard, RolesGuard)
+  @Roles(RolesEnum.User)
+  @ApiOkResponse({ description: 'Post successfully retrieved' })
+  @ApiUnauthorizedResponse({ description: 'Post not found' })
+  async findOnePost(@Param('id', ParseIntPipe) id: number) {
+    return this.postsService.findOnePost(id);
   }
 
   @Post(':id/create')
@@ -51,12 +59,15 @@ export class PostsController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePostDto: UpdatePostDto) {
-    return this.postsService.update(+id, updatePostDto);
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updatePostDto: UpdatePostDto,
+  ) {
+    return this.postsService.update(id, updatePostDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.postsService.remove(+id);
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    return this.postsService.remove(id);
   }
 }

@@ -7,12 +7,23 @@ import { Prisma } from '@prisma/client';
 export class GroupPostService {
   constructor(private prisma: PrismaService) {}
 
-  findAllGroupPosts() {
-    return `This action returns all groupPost`;
+  async findAllGroupPosts() {
+    const allGroupPost = await this.prisma.groupPost.findMany();
+
+    if (!allGroupPost)
+      throw new BadRequestException('Error retrieving the Group Posts');
+
+    return allGroupPost;
   }
 
-  findOneGroupPost(id: number) {
-    return `This action returns a #${id} groupPost`;
+  async findOneGroupPost(id: number) {
+    const groupPost = await this.prisma.groupPost.findFirstOrThrow({
+      where: {
+        id: id,
+      },
+    });
+
+    return groupPost;
   }
 
   async createGroupPost(
@@ -53,11 +64,11 @@ export class GroupPostService {
     return groupPost;
   }
 
-  updateGroupPost(id: number, updateGroupPostDto: UpdateGroupPostDto) {
+  async updateGroupPost(id: number, updateGroupPostDto: UpdateGroupPostDto) {
     return `This action updates a #${id} groupPost`;
   }
 
-  removeGroupPost(id: number) {
+  async removeGroupPost(id: number) {
     return `This action removes a #${id} groupPost`;
   }
 }

@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { GroupPostService } from './group-post.service';
 import { CreateGroupPostDto } from './dto/createGroupPost.dto';
@@ -21,20 +22,28 @@ import { Roles } from 'common/decorators';
 import { RolesEnum } from '@prisma/client';
 import { AtGuard, RolesGuard } from 'common/guards';
 
-@ApiTags('group posts')
+@ApiTags('group')
 @ApiBearerAuth()
-@Controller('group-post')
+@Controller('group')
 export class GroupPostController {
   constructor(private readonly groupPostService: GroupPostService) {}
 
-  @Get()
-  findAllGroupPosts() {
+  @Get('group')
+  @UseGuards(AtGuard, RolesGuard)
+  @Roles(RolesEnum.User)
+  @ApiOkResponse({ description: 'Group posts successfully retrieved' })
+  @ApiUnauthorizedResponse({ description: 'Posts not found' })
+  async findAllGroupPosts() {
     return this.groupPostService.findAllGroupPosts();
   }
 
   @Get(':id')
-  findOneGroupPost(@Param('id') id: string) {
-    return this.groupPostService.findOneGroupPost(+id);
+  @UseGuards(AtGuard, RolesGuard)
+  @Roles(RolesEnum.User)
+  @ApiOkResponse({ description: 'Group Post successfully retrieved' })
+  @ApiUnauthorizedResponse({ description: 'Post not found' })
+  async findOneGroupPost(@Param('id', ParseIntPipe) id: number) {
+    return this.groupPostService.findOneGroupPost(id);
   }
 
   @Post('group')
@@ -49,15 +58,15 @@ export class GroupPostController {
   }
 
   @Patch(':id')
-  update(
-    @Param('id') id: string,
+  async update(
+    @Param('id', ParseIntPipe) id: number,
     @Body() updateGroupPostDto: UpdateGroupPostDto,
   ) {
-    return this.groupPostService.updateGroupPost(+id, updateGroupPostDto);
+    return this.groupPostService.updateGroupPost(id, updateGroupPostDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.groupPostService.removeGroupPost(+id);
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    return this.groupPostService.removeGroupPost(id);
   }
 }

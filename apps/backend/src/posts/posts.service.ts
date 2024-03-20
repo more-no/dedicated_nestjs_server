@@ -7,6 +7,24 @@ import { Prisma } from '@prisma/client';
 export class PostsService {
   constructor(private prisma: PrismaService) {}
 
+  async findAllPosts() {
+    const allPosts = await this.prisma.post.findMany();
+
+    if (!allPosts) throw new BadRequestException('Error retriving the Posts');
+
+    return allPosts;
+  }
+
+  async findOnePost(id: number) {
+    const Post = await this.prisma.post.findFirstOrThrow({
+      where: {
+        id: id,
+      },
+    });
+
+    return Post;
+  }
+
   async createPost(userId: number, data: Prisma.PostCreateWithoutUserInput) {
     const newPost = await this.prisma.post.create({
       data: {
@@ -32,14 +50,6 @@ export class PostsService {
       throw new BadRequestException('Error updating the post counter');
 
     return newPost;
-  }
-
-  async findAll() {
-    return `This action returns all posts`;
-  }
-
-  async findOne(id: number) {
-    return `This action returns a #${id} post`;
   }
 
   async update(id: number, updatePostDto: UpdatePostDto) {
