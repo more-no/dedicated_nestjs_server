@@ -28,7 +28,7 @@ import { AtGuard, RolesGuard } from 'common/guards';
 export class GroupPostController {
   constructor(private readonly groupPostService: GroupPostService) {}
 
-  @Get('group')
+  @Get('group-posts')
   @UseGuards(AtGuard, RolesGuard)
   @Roles(RolesEnum.User)
   @ApiOkResponse({ description: 'Group posts successfully retrieved' })

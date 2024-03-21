@@ -117,7 +117,7 @@ export class UsersController {
   @ApiUnauthorizedResponse({ description: 'Update failed' })
   async updateRole(
     @Param('id', ParseIntPipe) id: number,
-    @Body('roleId', ParseIntPipe) roleId: number,
+    @Param('roleId', ParseIntPipe) roleId: number,
   ) {
     return await this.usersService.updateRole(id, roleId);
   }

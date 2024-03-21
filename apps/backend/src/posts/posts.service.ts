@@ -52,11 +52,49 @@ export class PostsService {
     return newPost;
   }
 
-  async update(id: number, updatePostDto: UpdatePostDto) {
-    return `This action updates a #${id} post`;
+  async updatePost(
+    userId: number,
+    postId: number,
+    data: Prisma.PostUpdateInput,
+  ) {
+    const updatedPost = await this.prisma.post.update({
+      where: {
+        id: postId,
+        user_id: userId,
+      },
+      data: {
+        title: data.title,
+        body: data.body,
+      },
+    });
+
+    return updatedPost;
   }
 
-  async remove(id: number) {
-    return `This action removes a #${id} post`;
+  async removePost(userId: number, postId: number) {
+    const deletedPost = await this.prisma.post.delete({
+      where: {
+        id: postId,
+        user_id: userId,
+      },
+    });
+
+    if (!deletedPost) throw new BadRequestException('Error deleting the Post');
+
+    const updateUserPostCount = await this.prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        post_count: {
+          decrement: 1,
+        },
+      },
+    });
+
+    if (!updateUserPostCount)
+      throw new BadRequestException('Error updating the post counter');
+
+    return deletedPost;
   }
 }

@@ -58,16 +58,24 @@ export class PostsController {
     return this.postsService.createPost(id, createPostDto);
   }
 
-  @Patch(':id')
+  @Patch(':id/update/:postId')
   async update(
     @Param('id', ParseIntPipe) id: number,
+    @Param('postId', ParseIntPipe) postId: number,
     @Body() updatePostDto: UpdatePostDto,
   ) {
-    return this.postsService.update(id, updatePostDto);
+    return this.postsService.updatePost(id, postId, updatePostDto);
   }
 
-  @Delete(':id')
-  async remove(@Param('id', ParseIntPipe) id: number) {
-    return this.postsService.remove(id);
+  @Delete(':id/delete/:postId')
+  @UseGuards(AtGuard, RolesGuard)
+  @Roles(RolesEnum.User, RolesEnum.Editor)
+  @ApiOkResponse({ description: 'Post successfully deleted' })
+  @ApiUnauthorizedResponse({ description: 'Post deletion failed' })
+  async remove(
+    @Param('id', ParseIntPipe) userId: number,
+    @Param('postId', ParseIntPipe) postId: number,
+  ) {
+    return this.postsService.removePost(userId, postId);
   }
 }
