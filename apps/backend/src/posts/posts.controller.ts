@@ -28,7 +28,7 @@ import { Roles } from 'common/decorators';
 export class PostsController {
   constructor(private postsService: PostsService) {}
 
-  @Get('posts')
+  @Get('getposts')
   @UseGuards(AtGuard, RolesGuard)
   @Roles(RolesEnum.User)
   @ApiOkResponse({ description: 'Posts successfully retrieved' })

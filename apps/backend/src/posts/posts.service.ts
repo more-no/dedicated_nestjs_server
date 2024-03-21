@@ -1,5 +1,4 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { UpdatePostDto } from './dto/updatePost.dto';
 import { PrismaService } from '../../prisma/prisma.service';
 import { Prisma } from '@prisma/client';
 
@@ -10,7 +9,7 @@ export class PostsService {
   async findAllPosts() {
     const allPosts = await this.prisma.post.findMany();
 
-    if (!allPosts) throw new BadRequestException('Error retriving the Posts');
+    if (!allPosts) throw new BadRequestException('Error retrieving the Posts');
 
     return allPosts;
   }

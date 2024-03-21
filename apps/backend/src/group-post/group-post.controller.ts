@@ -22,13 +22,13 @@ import { Roles } from 'common/decorators';
 import { RolesEnum } from '@prisma/client';
 import { AtGuard, RolesGuard } from 'common/guards';
 
-@ApiTags('group')
+@ApiTags('group-posts')
 @ApiBearerAuth()
 @Controller('group')
 export class GroupPostController {
   constructor(private readonly groupPostService: GroupPostService) {}
 
-  @Get('group-posts')
+  @Get('getposts')
   @UseGuards(AtGuard, RolesGuard)
   @Roles(RolesEnum.User)
   @ApiOkResponse({ description: 'Group posts successfully retrieved' })
@@ -46,7 +46,7 @@ export class GroupPostController {
     return this.groupPostService.findOneGroupPost(id);
   }
 
-  @Post('group')
+  @Post(':id/create')
   @UseGuards(AtGuard, RolesGuard)
   @Roles(RolesEnum.User)
   @ApiOkResponse({ description: 'Post successfully created' })
@@ -57,7 +57,7 @@ export class GroupPostController {
     return this.groupPostService.createGroupPost(userIds, createGroupPostDto);
   }
 
-  @Patch(':id')
+  @Patch(':id/updates/:postId')
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateGroupPostDto: UpdateGroupPostDto,
@@ -65,7 +65,7 @@ export class GroupPostController {
     return this.groupPostService.updateGroupPost(id, updateGroupPostDto);
   }
 
-  @Delete(':id')
+  @Delete(':id/delete/:postId')
   async remove(@Param('id', ParseIntPipe) id: number) {
     return this.groupPostService.removeGroupPost(id);
   }

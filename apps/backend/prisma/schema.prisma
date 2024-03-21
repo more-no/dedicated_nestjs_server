@@ -36,7 +36,7 @@ model Post {
   title              String 	  @db.VarChar(40)
   body               String     @db.VarChar(300)
   created_at         DateTime   @default(now()) @db.Timestamp(3)
-  updated_at         DateTime   @default(now()) @db.Timestamp(3)
+  updated_at         DateTime   @default(now()) @db.Timestamp(3) @updatedAt
   user               User       @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }
 
@@ -45,7 +45,7 @@ model GroupPost {
   title              String
   body               String
   created_at         DateTime   @default(now()) @db.Timestamp(3)
-  updated_at         DateTime   @default(now()) @db.Timestamp(3)
+  updated_at         DateTime   @default(now()) @db.Timestamp(3) @updatedAt
   user               UserOnGroupPost[]
 }
 
