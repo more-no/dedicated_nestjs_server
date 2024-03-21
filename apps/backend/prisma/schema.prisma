@@ -59,7 +59,7 @@ model UserOnGroupPost {
 model Session {
   id                   Int      @id @default(autoincrement())
   token                String   @unique
-  expiry_time_stamp    DateTime @default(dbgenerated("NOW() + interval '24 hours'")) @map("expiry_timestamp") @db.Timestamp(3)
+  expiry_timestamp     DateTime @map("expiry_timestamp") @db.Timestamp(3)
   user_id              Int      @map("user_id")
   user                 User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }

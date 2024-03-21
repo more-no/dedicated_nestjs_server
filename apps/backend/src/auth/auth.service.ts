@@ -55,9 +55,13 @@ export class AuthService {
       newUser.user_role[0].role_id,
     );
 
+    const expiryTime = new Date();
+    expiryTime.setHours(expiryTime.getHours() + 24);
+
     const session = await this.prisma.session.create({
       data: {
         token: tokens.access_token,
+        expiry_timestamp: expiryTime,
         user_id: newUser.id,
       },
     });
@@ -105,11 +109,15 @@ export class AuthService {
       return tokens;
     }
 
+    const expiryTime = new Date();
+    expiryTime.setHours(expiryTime.getHours() + 24);
+
     if (!existingSession) {
       const newSession = await this.prisma.session.create({
         data: {
-          user_id: user.id,
           token: tokens.access_token,
+          expiry_timestamp: expiryTime,
+          user_id: user.id,
         },
       });
 
