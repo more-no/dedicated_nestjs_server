@@ -23,3 +23,7 @@ npm-debug.log*
 
 # Various
 .turbo
+.dockerignore
+docker-compose.debug.yml
+docker-compose.yml
+Dockerfile
