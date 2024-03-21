@@ -59,6 +59,10 @@ export class PostsController {
   }
 
   @Patch(':id/update/:postId')
+  @UseGuards(AtGuard, RolesGuard)
+  @Roles(RolesEnum.User, RolesEnum.Editor)
+  @ApiOkResponse({ description: 'Post successfully updated' })
+  @ApiUnauthorizedResponse({ description: 'Post update failed' })
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Param('postId', ParseIntPipe) postId: number,

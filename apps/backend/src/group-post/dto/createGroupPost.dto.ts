@@ -22,6 +22,6 @@ export class CreateGroupPostDto {
   @IsNotEmpty({ each: true })
   @IsArray()
   @ArrayNotEmpty()
-  @ApiProperty()
+  @ApiProperty({ type: [Number] })
   userIds: number[];
 }

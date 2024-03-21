@@ -1,12 +1,12 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
-import { Prisma } from '@prisma/client';
+import { Post, Prisma } from '@prisma/client';
 
 @Injectable()
 export class PostsService {
   constructor(private prisma: PrismaService) {}
 
-  async findAllPosts() {
+  async findAllPosts(): Promise<Post[]> {
     const allPosts = await this.prisma.post.findMany();
 
     if (!allPosts) throw new BadRequestException('Error retrieving the Posts');
@@ -14,7 +14,7 @@ export class PostsService {
     return allPosts;
   }
 
-  async findOnePost(id: number) {
+  async findOnePost(id: number): Promise<Post> {
     const Post = await this.prisma.post.findFirstOrThrow({
       where: {
         id: id,
@@ -24,7 +24,10 @@ export class PostsService {
     return Post;
   }
 
-  async createPost(userId: number, data: Prisma.PostCreateWithoutUserInput) {
+  async createPost(
+    userId: number,
+    data: Prisma.PostCreateWithoutUserInput,
+  ): Promise<Post> {
     const newPost = await this.prisma.post.create({
       data: {
         ...data,
@@ -55,7 +58,7 @@ export class PostsService {
     userId: number,
     postId: number,
     data: Prisma.PostUpdateInput,
-  ) {
+  ): Promise<Post> {
     const updatedPost = await this.prisma.post.update({
       where: {
         id: postId,
@@ -70,7 +73,7 @@ export class PostsService {
     return updatedPost;
   }
 
-  async removePost(userId: number, postId: number) {
+  async removePost(userId: number, postId: number): Promise<Post> {
     const deletedPost = await this.prisma.post.delete({
       where: {
         id: postId,

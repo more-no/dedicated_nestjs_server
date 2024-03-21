@@ -1,13 +1,12 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { UpdateGroupPostDto } from './dto/updateGroupPost.dto';
 import { PrismaService } from '../../prisma/prisma.service';
-import { Prisma } from '@prisma/client';
+import { GroupPost, Prisma } from '@prisma/client';
 
 @Injectable()
 export class GroupPostService {
   constructor(private prisma: PrismaService) {}
 
-  async findAllGroupPosts() {
+  async findAllGroupPosts(): Promise<GroupPost[]> {
     const allGroupPost = await this.prisma.groupPost.findMany();
 
     if (!allGroupPost)
@@ -16,7 +15,7 @@ export class GroupPostService {
     return allGroupPost;
   }
 
-  async findOneGroupPost(id: number) {
+  async findOneGroupPost(id: number): Promise<GroupPost> {
     const groupPost = await this.prisma.groupPost.findFirstOrThrow({
       where: {
         id: id,
@@ -40,7 +39,7 @@ export class GroupPostService {
   async createGroupPost(
     userIds: number[],
     data: Prisma.GroupPostCreateWithoutUserInput,
-  ) {
+  ): Promise<GroupPost> {
     const groupPost = await this.prisma.groupPost.create({
       data: {
         title: data.title,
@@ -75,11 +74,48 @@ export class GroupPostService {
     return groupPost;
   }
 
-  async updateGroupPost(id: number, updateGroupPostDto: UpdateGroupPostDto) {
-    return `This action updates a #${id} groupPost`;
+  async updateGroupPost(
+    userId: number,
+    postId: number,
+    userIds: number[],
+    data: Prisma.GroupPostUpdateWithoutUserInput,
+  ): Promise<GroupPost> {
+    if (!userIds.includes(userId)) {
+      throw new Error('User ID does not match any of the userIds');
+    }
+
+    const updatedGroupPost = await this.prisma.groupPost.update({
+      where: { id: postId },
+      data: {
+        title: data.title,
+        body: data.body,
+      },
+    });
+
+    if (!updatedGroupPost)
+      throw new BadRequestException('Error creating Group Post');
+
+    return updatedGroupPost;
   }
 
-  async removeGroupPost(id: number) {
-    return `This action removes a #${id} groupPost`;
+  async removeGroupPost(
+    userId: number,
+    postId: number,
+    userIds: number[],
+  ): Promise<GroupPost> {
+    if (!userIds.includes(userId)) {
+      throw new Error('User ID does not match any of the userIds');
+    }
+
+    const deletedGroupPost = await this.prisma.groupPost.delete({
+      where: {
+        id: postId,
+      },
+    });
+
+    if (!deletedGroupPost)
+      throw new BadRequestException('Error deleting the Group Post');
+
+    return deletedGroupPost;
   }
 }
