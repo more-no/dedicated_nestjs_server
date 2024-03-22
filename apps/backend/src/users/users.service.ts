@@ -7,10 +7,11 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
-import { UpdateUserDto, UploadImageDto } from './dto';
+import { PersonalDataUserDto, UpdateUserDto, UploadImageDto } from './dto';
 import { JwtService } from '@nestjs/jwt';
-import { Prisma, User } from '@prisma/client';
+import { User } from '@prisma/client';
 import { CustomRequest } from 'common/types';
+import { UserEntity } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
@@ -87,26 +88,40 @@ export class UsersService {
   // update user info
   async update(
     id: number,
-    data: Prisma.UserUpdateInput,
-  ): Promise<UpdateUserDto> {
-    const userUpdated = await this.prisma.user.update({
-      where: {
-        id: id,
-      },
-      data: {
-        username: data.username,
-        fullname: data.fullname,
-        bio: data.bio,
-      },
-    });
+    personalData: UpdateUserDto,
+  ): Promise<[User, PersonalDataUserDto]> {
+    try {
+      const [updatedUser, updatedPersonalData] = await this.prisma.$transaction(
+        [
+          this.prisma.user.update({
+            where: {
+              id: id,
+            },
+            data: {
+              username: personalData.username,
+              fullname: personalData.fullname,
+              bio: personalData.bio,
+            },
+          }),
+          this.prisma.personalData.update({
+            where: { user_id: id },
+            data: {
+              first_name: personalData.personal_data.first_name,
+              last_name: personalData.personal_data.last_name,
+              age: personalData.personal_data.age,
+              nationality: personalData.personal_data.nationality,
+            },
+          }),
+        ],
+      );
 
-    if (!userUpdated) throw new BadRequestException('Could not update');
-
-    return {
-      username: userUpdated.username,
-      fullname: userUpdated.fullname,
-      bio: userUpdated.bio,
-    };
+      return [updatedUser, updatedPersonalData];
+    } catch (error) {
+      throw new BadRequestException(
+        'Error updating User data: ',
+        error.message,
+      );
+    }
   }
 
   // delete authenticated user and session

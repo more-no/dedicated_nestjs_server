@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "PersonalData" ALTER COLUMN "first_name" DROP NOT NULL,
+ALTER COLUMN "last_name" DROP NOT NULL,
+ALTER COLUMN "age" DROP NOT NULL,
+ALTER COLUMN "nationality" DROP NOT NULL;

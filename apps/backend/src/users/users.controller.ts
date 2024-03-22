@@ -16,7 +16,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { UpdateUserDto, UploadImageDto } from './dto';
+import { UpdateUserDto } from './dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { SharpPipe } from './sharp.pipe';
 import {
@@ -84,7 +84,7 @@ export class UsersController {
     @Param('id', ParseIntPipe) id: number,
     @Body() updateUserDto: UpdateUserDto,
   ) {
-    return new UserEntity(await this.usersService.update(id, updateUserDto));
+    return await this.usersService.update(id, updateUserDto);
   }
 
   // reference https://docs.nestjs.com/controllers#request-object

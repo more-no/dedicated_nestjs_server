@@ -1,5 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, isNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsString, ValidateNested } from 'class-validator';
+import { PersonalDataUserDto } from './personalDataUser.dto';
+import { Type } from 'class-transformer';
 
 export class UpdateUserDto {
   @IsString()
@@ -14,4 +16,9 @@ export class UpdateUserDto {
   @IsString()
   @ApiProperty()
   bio?: string;
+
+  @ApiProperty({ type: () => PersonalDataUserDto })
+  @ValidateNested()
+  @Type(() => PersonalDataUserDto)
+  personal_data: PersonalDataUserDto;
 }

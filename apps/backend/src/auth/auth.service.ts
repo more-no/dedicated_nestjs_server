@@ -39,6 +39,11 @@ export class AuthService {
             },
           },
         },
+        personal_data: {
+          create: {
+            first_name: dto.username,
+          },
+        },
       } as UserCreateInput,
       include: {
         user_role: true,

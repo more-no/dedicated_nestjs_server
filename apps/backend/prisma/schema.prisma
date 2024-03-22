@@ -23,11 +23,22 @@ model User {
   post_count         Int        @default(0)
   comment_count      Int        @default(0)
   session            Session[]
+  personal_data      PersonalData[]
   user_role          UserRole[]
   post               Post[]
   group_post         UserOnGroupPost[]
 
     @@map("users")
+}
+
+model PersonalData {
+  id                 Int        @id @default(autoincrement())
+  user_id            Int        @map("user_id") @unique
+  first_name         String?     @db.VarChar(20)
+  last_name          String?     @db.VarChar(20)
+  age                Int?
+  nationality        String?     @db.VarChar(20)
+  user               User       @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }
 
 model Post {
@@ -42,16 +53,16 @@ model Post {
 
 model GroupPost {
   id                 Int        @id @default(autoincrement())
-  title              String
-  body               String
+  title              String     @db.VarChar(30)
+  body               String     @db.VarChar(300)
   created_at         DateTime   @default(now()) @db.Timestamp(3)
   updated_at         DateTime   @default(now()) @db.Timestamp(3) @updatedAt
   user               UserOnGroupPost[]
 }
 
 model UserOnGroupPost {
-  user_id           Int
-  group_post_id     Int
+  user_id           Int       @map("user_id")
+  group_post_id     Int       @map("group_post_id")
   group_post        GroupPost @relation(fields: [group_post_id], references: [id], onDelete: Cascade)
   user              User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
@@ -80,8 +91,8 @@ enum RolesEnum {
 }
 
 model UserRole {
-  user_id Int
-  role_id Int
+  user_id Int     @map("user_id")
+  role_id Int     @map("role_id")
   user    User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
   role    Role    @relation(fields: [role_id], references: [id], onDelete: Cascade)
 
