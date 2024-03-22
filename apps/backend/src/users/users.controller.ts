@@ -43,17 +43,21 @@ export class UsersController {
   @Roles(RolesEnum.Admin)
   @ApiOkResponse({ description: 'Users successfully retrieved' })
   @ApiBadRequestResponse({ description: 'Users not found' })
-  async findAll() {
+  async getUsers() {
     const users = await this.usersService.getUsers();
     return users.map((user) => new UserEntity(user));
   }
 
   @Get(':id')
+  @UseInterceptors(TokenInterceptor)
   @Roles(RolesEnum.User, RolesEnum.Admin)
   @ApiOkResponse({ description: 'User successfully retrieved' })
   @ApiBadRequestResponse({ description: 'User not found' })
-  async findOne(@Param('id', ParseIntPipe) id: number) {
-    return new UserEntity(await this.usersService.getUserById(id));
+  async getUserById(
+    @Param('id', ParseIntPipe) id: number,
+    @Req() request: CustomRequest,
+  ) {
+    return new UserEntity(await this.usersService.getUserById(id, request));
   }
 
   // reference https://docs.nestjs.com/techniques/file-upload
@@ -67,7 +71,7 @@ export class UsersController {
     @UploadedFile(SharpPipe) uploadResultDto: UploadResultDto,
   ) {
     const result = await this.usersService.upload(userId, uploadResultDto);
-    return [uploadResultDto.userId, uploadResultDto.filename];
+    return [result.userId, result.filename];
   }
 
   @Patch(':id/update')
@@ -83,8 +87,8 @@ export class UsersController {
 
   // reference https://docs.nestjs.com/controllers#request-object
 
-  @UseInterceptors(TokenInterceptor)
   @Delete(':id/remove')
+  @UseInterceptors(TokenInterceptor)
   @Roles(RolesEnum.User)
   @ApiOkResponse({ description: 'User successfully deleted' })
   @ApiUnauthorizedResponse({ description: 'Deletion failed' })

@@ -39,24 +39,30 @@ export class UsersService {
     return users;
   }
 
-  async getUserById(id: number): Promise<User> {
-    const user = await this.prisma.user.findUniqueOrThrow({
-      where: {
-        id: id,
-      },
-      include: {
-        post: true,
-        group_post: {
-          include: {
-            group_post: true,
+  async getUserById(id: number, request: CustomRequest): Promise<User> {
+    const token = await this.jwtService.decode(request.token);
+
+    if (id === token.sub) {
+      const user = await this.prisma.user.findUniqueOrThrow({
+        where: {
+          id: id,
+        },
+        include: {
+          post: true,
+          group_post: {
+            include: {
+              group_post: true,
+            },
           },
         },
-      },
-    });
+      });
 
-    if (!user) throw new NotFoundException('User not found');
+      if (!user) throw new NotFoundException('User not found');
 
-    return user;
+      return user;
+    } else {
+      throw new UnauthorizedException('Unauthorized');
+    }
   }
 
   // update user info
