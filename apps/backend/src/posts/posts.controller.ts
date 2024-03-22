@@ -8,6 +8,8 @@ import {
   Delete,
   ParseIntPipe,
   UseGuards,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/createPost.dto';
@@ -23,6 +25,7 @@ import { RolesEnum } from '@prisma/client';
 import { Roles } from 'common/decorators';
 
 @ApiTags('posts')
+@UsePipes(ValidationPipe)
 @UseGuards(AtGuard, RolesGuard)
 @ApiBearerAuth()
 @Controller('posts')

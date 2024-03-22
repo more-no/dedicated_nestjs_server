@@ -8,6 +8,8 @@ import {
   Delete,
   UseGuards,
   ParseIntPipe,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { GroupPostService } from './group-post.service';
 import { CreateGroupPostDto } from './dto/createGroupPost.dto';
@@ -23,6 +25,7 @@ import { RolesEnum } from '@prisma/client';
 import { AtGuard, RolesGuard } from 'common/guards';
 
 @ApiTags('group-posts')
+@UsePipes(ValidationPipe)
 @UseGuards(AtGuard, RolesGuard)
 @ApiBearerAuth()
 @Controller('group')

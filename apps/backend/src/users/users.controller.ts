@@ -12,6 +12,8 @@ import {
   ParseIntPipe,
   Get,
   ClassSerializerInterceptor,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto, UploadImageDto } from './dto';
@@ -32,6 +34,7 @@ import { UserEntity } from './entities/user.entity';
 import { CustomRequest } from 'common/types';
 
 @ApiTags('users')
+@UsePipes(ValidationPipe)
 @UseGuards(AtGuard, RolesGuard)
 @ApiBearerAuth()
 @Controller('users')

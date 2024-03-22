@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 
 export class AuthSignupDto {
   @IsString()
@@ -14,6 +14,7 @@ export class AuthSignupDto {
 
   @IsString()
   @IsNotEmpty()
+  @IsEmail()
   @ApiProperty()
   email: string;
 }
