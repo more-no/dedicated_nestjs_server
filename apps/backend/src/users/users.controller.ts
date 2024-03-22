@@ -32,6 +32,7 @@ import { UserEntity } from './entities/user.entity';
 import { CustomRequest } from 'common/types';
 
 @ApiTags('users')
+@UseGuards(AtGuard, RolesGuard)
 @ApiBearerAuth()
 @Controller('users')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -39,7 +40,6 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get('getUsers')
-  @UseGuards(AtGuard, RolesGuard)
   @Roles(RolesEnum.Admin)
   @ApiOkResponse({ description: 'Users successfully retrieved' })
   @ApiBadRequestResponse({ description: 'Users not found' })
@@ -49,7 +49,6 @@ export class UsersController {
   }
 
   @Get(':id')
-  @UseGuards(AtGuard, RolesGuard)
   @Roles(RolesEnum.User, RolesEnum.Admin)
   @ApiOkResponse({ description: 'User successfully retrieved' })
   @ApiBadRequestResponse({ description: 'User not found' })
@@ -59,7 +58,6 @@ export class UsersController {
 
   // reference https://docs.nestjs.com/techniques/file-upload
   @Post(':id/upload')
-  @UseGuards(AtGuard, RolesGuard)
   @Roles(RolesEnum.User)
   @ApiOkResponse({ description: 'User picture successfully uploaded' })
   @ApiUnauthorizedResponse({ description: 'Upload failed' })
@@ -73,7 +71,6 @@ export class UsersController {
   }
 
   @Patch(':id/update')
-  @UseGuards(AtGuard, RolesGuard)
   @Roles(RolesEnum.User, RolesEnum.Editor)
   @ApiOkResponse({ description: 'User successfully updated' })
   @ApiUnauthorizedResponse({ description: 'Update failed' })
@@ -87,7 +84,6 @@ export class UsersController {
   // reference https://docs.nestjs.com/controllers#request-object
 
   @UseInterceptors(TokenInterceptor)
-  @UseGuards(AtGuard, RolesGuard)
   @Delete(':id/remove')
   @Roles(RolesEnum.User)
   @ApiOkResponse({ description: 'User successfully deleted' })
@@ -102,7 +98,6 @@ export class UsersController {
   // Admin endpoints
 
   @Delete('remove/:id')
-  @UseGuards(AtGuard, RolesGuard)
   @Roles(RolesEnum.Admin)
   @ApiOkResponse({ description: 'User successfully deleted' })
   @ApiUnauthorizedResponse({ description: 'Deletion failed' })
@@ -111,7 +106,6 @@ export class UsersController {
   }
 
   @Patch('role/:id')
-  @UseGuards(AtGuard, RolesGuard)
   @Roles(RolesEnum.Admin)
   @ApiOkResponse({ description: 'Role successfully updated' })
   @ApiUnauthorizedResponse({ description: 'Update failed' })

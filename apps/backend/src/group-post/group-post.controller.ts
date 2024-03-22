@@ -23,13 +23,13 @@ import { RolesEnum } from '@prisma/client';
 import { AtGuard, RolesGuard } from 'common/guards';
 
 @ApiTags('group-posts')
+@UseGuards(AtGuard, RolesGuard)
 @ApiBearerAuth()
 @Controller('group')
 export class GroupPostController {
   constructor(private readonly groupPostService: GroupPostService) {}
 
   @Get('getposts')
-  @UseGuards(AtGuard, RolesGuard)
   @Roles(RolesEnum.User)
   @ApiOkResponse({ description: 'Group posts successfully retrieved' })
   @ApiUnauthorizedResponse({ description: 'Group Posts not found' })
@@ -38,7 +38,6 @@ export class GroupPostController {
   }
 
   @Get(':id')
-  @UseGuards(AtGuard, RolesGuard)
   @Roles(RolesEnum.User)
   @ApiOkResponse({ description: 'Group Post successfully retrieved' })
   @ApiUnauthorizedResponse({ description: 'Group Post not found' })
@@ -47,7 +46,6 @@ export class GroupPostController {
   }
 
   @Post(':id/create')
-  @UseGuards(AtGuard, RolesGuard)
   @Roles(RolesEnum.User)
   @ApiOkResponse({ description: 'Group Post successfully created' })
   @ApiUnauthorizedResponse({ description: 'Group Post creation failed' })
@@ -58,7 +56,6 @@ export class GroupPostController {
   }
 
   @Patch(':id/updates/:postId')
-  @UseGuards(AtGuard, RolesGuard)
   @Roles(RolesEnum.User, RolesEnum.Editor)
   @ApiOkResponse({ description: 'Group Post successfully updated' })
   @ApiUnauthorizedResponse({ description: 'Group Post update failed' })
@@ -76,7 +73,6 @@ export class GroupPostController {
   }
 
   @Delete(':id/delete/:postId')
-  @UseGuards(AtGuard, RolesGuard)
   @Roles(RolesEnum.User, RolesEnum.Editor)
   @ApiOkResponse({ description: 'Group Post successfully deleted' })
   @ApiUnauthorizedResponse({ description: 'Group Post deletion failed' })

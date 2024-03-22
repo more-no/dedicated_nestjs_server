@@ -23,13 +23,13 @@ import { RolesEnum } from '@prisma/client';
 import { Roles } from 'common/decorators';
 
 @ApiTags('posts')
+@UseGuards(AtGuard, RolesGuard)
 @ApiBearerAuth()
 @Controller('posts')
 export class PostsController {
   constructor(private postsService: PostsService) {}
 
   @Get('getposts')
-  @UseGuards(AtGuard, RolesGuard)
   @Roles(RolesEnum.User)
   @ApiOkResponse({ description: 'Posts successfully retrieved' })
   @ApiUnauthorizedResponse({ description: 'Posts not found' })
@@ -38,7 +38,6 @@ export class PostsController {
   }
 
   @Get(':id')
-  @UseGuards(AtGuard, RolesGuard)
   @Roles(RolesEnum.User)
   @ApiOkResponse({ description: 'Post successfully retrieved' })
   @ApiUnauthorizedResponse({ description: 'Post not found' })
@@ -47,7 +46,6 @@ export class PostsController {
   }
 
   @Post(':id/create')
-  @UseGuards(AtGuard, RolesGuard)
   @Roles(RolesEnum.User)
   @ApiOkResponse({ description: 'Post successfully created' })
   @ApiUnauthorizedResponse({ description: 'Post creation failed' })
@@ -59,7 +57,6 @@ export class PostsController {
   }
 
   @Patch(':id/update/:postId')
-  @UseGuards(AtGuard, RolesGuard)
   @Roles(RolesEnum.User, RolesEnum.Editor)
   @ApiOkResponse({ description: 'Post successfully updated' })
   @ApiUnauthorizedResponse({ description: 'Post update failed' })
@@ -72,7 +69,6 @@ export class PostsController {
   }
 
   @Delete(':id/delete/:postId')
-  @UseGuards(AtGuard, RolesGuard)
   @Roles(RolesEnum.User, RolesEnum.Editor)
   @ApiOkResponse({ description: 'Post successfully deleted' })
   @ApiUnauthorizedResponse({ description: 'Post deletion failed' })

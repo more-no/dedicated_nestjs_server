@@ -46,6 +46,11 @@ export class UsersService {
       },
       include: {
         post: true,
+        group_post: {
+          include: {
+            group_post: true,
+          },
+        },
       },
     });
 
