@@ -8,9 +8,16 @@ import { UsersModule } from './users/users.module';
 import { JwtModule } from '@nestjs/jwt';
 import { PostsModule } from './posts/posts.module';
 import { GroupPostModule } from './group-post/group-post.module';
+import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 
 @Module({
   imports: [
+    CacheModule.register({
+      isGlobal: true,
+      ttl: 10,
+      max: 10,
+    }),
     ConfigModule.forRoot({ isGlobal: true }),
     UsersModule,
     PrismaModule,
@@ -20,6 +27,12 @@ import { GroupPostModule } from './group-post/group-post.module';
     GroupPostModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: CacheInterceptor,
+    },
+  ],
 })
 export class AppModule {}
