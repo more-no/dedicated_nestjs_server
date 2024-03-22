@@ -7,7 +7,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
-import { UpdateUserDto, UploadResultDto } from './dto';
+import { UpdateUserDto, UploadImageDto } from './dto';
 import { JwtService } from '@nestjs/jwt';
 import { Prisma, User } from '@prisma/client';
 import { CustomRequest } from 'common/types';
@@ -65,6 +65,25 @@ export class UsersService {
     }
   }
 
+  // upload user picture
+  async upload(userId: number, image: string): Promise<UploadImageDto> {
+    try {
+      const userUpdated = await this.prisma.user.update({
+        where: { id: userId },
+        data: { picture_url: image },
+      });
+
+      if (!userUpdated) throw new BadRequestException('Could not upload');
+
+      return {
+        userId: userUpdated.id,
+        filename: userUpdated.picture_url,
+      };
+    } catch (error) {
+      throw new NotFoundException(`Failed to upload: ${error.message}`);
+    }
+  }
+
   // update user info
   async update(
     id: number,
@@ -88,28 +107,6 @@ export class UsersService {
       fullname: userUpdated.fullname,
       bio: userUpdated.bio,
     };
-  }
-
-  // upload user picture
-  async upload(
-    userId: number,
-    uploadResultDto: UploadResultDto,
-  ): Promise<UploadResultDto> {
-    try {
-      const userUpdated = await this.prisma.user.update({
-        where: { id: userId },
-        data: { picture_url: uploadResultDto.filename },
-      });
-
-      if (!userUpdated) throw new BadRequestException('Could not upload');
-
-      return {
-        userId: uploadResultDto.userId,
-        filename: uploadResultDto.filename,
-      };
-    } catch (error) {
-      throw new NotFoundException(`Failed to upload: ${error.message}`);
-    }
   }
 
   // delete authenticated user and session

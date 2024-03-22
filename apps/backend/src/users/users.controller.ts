@@ -14,7 +14,7 @@ import {
   ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { UpdateUserDto, UploadResultDto } from './dto';
+import { UpdateUserDto, UploadImageDto } from './dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { SharpPipe } from './sharp.pipe';
 import {
@@ -68,10 +68,9 @@ export class UsersController {
   @UseInterceptors(FileInterceptor('image'))
   async upload(
     @Param('id', ParseIntPipe) userId: number,
-    @UploadedFile(SharpPipe) uploadResultDto: UploadResultDto,
+    @UploadedFile(SharpPipe) image: string,
   ) {
-    const result = await this.usersService.upload(userId, uploadResultDto);
-    return [result.userId, result.filename];
+    return await this.usersService.upload(userId, image);
   }
 
   @Patch(':id/update')
