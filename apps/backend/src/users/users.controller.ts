@@ -66,9 +66,9 @@ export class UsersController {
   // reference https://docs.nestjs.com/techniques/file-upload
   @Post(':id/upload')
   @Roles(RolesEnum.User)
+  @UseInterceptors(FileInterceptor('image'))
   @ApiOkResponse({ description: 'User picture successfully uploaded' })
   @ApiUnauthorizedResponse({ description: 'Upload failed' })
-  @UseInterceptors(FileInterceptor('image'))
   async upload(
     @Param('id', ParseIntPipe) userId: number,
     @UploadedFile(SharpPipe) image: string,

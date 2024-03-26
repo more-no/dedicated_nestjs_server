@@ -11,7 +11,6 @@ import { PersonalDataUserDto, UpdateUserDto, UploadImageDto } from './dto';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
 import { CustomRequest } from 'common/types';
-import { UserEntity } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {

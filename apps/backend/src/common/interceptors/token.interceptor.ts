@@ -12,7 +12,7 @@ import { Observable } from 'rxjs';
 
 @Injectable()
 export class TokenInterceptor implements NestInterceptor {
-  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+  intercept(context: ExecutionContext, next: CallHandler): Observable<Request> {
     const request: CustomRequest = context.switchToHttp().getRequest();
     const token = request.headers.authorization.split(' ')[1];
     request.token = token;
