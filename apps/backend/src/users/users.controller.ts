@@ -34,7 +34,6 @@ import { UserEntity } from './entities/user.entity';
 import { CustomRequest } from 'common/types';
 
 @ApiTags('users')
-@UsePipes(ValidationPipe)
 @UseGuards(AtGuard, RolesGuard)
 @ApiBearerAuth()
 @Controller('users')

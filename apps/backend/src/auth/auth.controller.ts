@@ -19,7 +19,6 @@ import {
 } from '@nestjs/swagger';
 
 @ApiTags('auth')
-@UsePipes(ValidationPipe)
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}

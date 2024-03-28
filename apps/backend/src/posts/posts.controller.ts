@@ -25,14 +25,13 @@ import { RolesEnum } from '@prisma/client';
 import { Roles } from '../common/decorators';
 
 @ApiTags('posts')
-@UsePipes(ValidationPipe)
 @UseGuards(AtGuard, RolesGuard)
 @ApiBearerAuth()
 @Controller('posts')
 export class PostsController {
   constructor(private postsService: PostsService) {}
 
-  @Get('getposts')
+  @Get('getPosts')
   @Roles(RolesEnum.User)
   @ApiOkResponse({ description: 'Posts successfully retrieved' })
   @ApiUnauthorizedResponse({ description: 'Posts not found' })
