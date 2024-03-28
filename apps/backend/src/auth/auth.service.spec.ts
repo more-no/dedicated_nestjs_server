@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
 import { PrismaService } from '../../prisma/prisma.service';
 import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -9,26 +10,7 @@ describe('AuthService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        AuthService,
-        {
-          provide: PrismaService,
-          useValue: {
-            user: {
-              create: jest.fn(),
-              findFirst: jest.fn(),
-              findUnique: jest.fn(),
-              updateMany: jest.fn(),
-            },
-            session: {
-              findFirst: jest.fn(),
-              create: jest.fn(),
-              deleteMany: jest.fn(),
-            },
-          },
-        },
-        ConfigService,
-      ],
+      providers: [AuthService, PrismaService, ConfigService, JwtService],
     }).compile();
 
     service = module.get<AuthService>(AuthService);

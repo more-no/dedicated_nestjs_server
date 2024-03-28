@@ -7,6 +7,7 @@ import { JwtService } from '@nestjs/jwt';
 
 describe('UsersController', () => {
   let controller: UsersController;
+  let jwt: JwtService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -15,9 +16,20 @@ describe('UsersController', () => {
     }).compile();
 
     controller = module.get<UsersController>(UsersController);
+    jwt = module.get<JwtService>(JwtService);
   });
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
+  });
+
+  describe('getUsers', () => {
+    it('should return a list of users', () => {
+      controller.getUsers();
+    });
+  });
+
+  describe('getUserById', () => {
+    it('should get one user', () => {});
   });
 });

@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude, Type } from 'class-transformer';
 import { IsEmail, IsNumber, IsString, ValidateNested } from 'class-validator';
-import { PersonalDataUserDto } from 'users/dto/personalDataUser.dto';
+import { PersonalDataUserDto } from '../dto/personalDataUser.dto';
 
 export class UserEntity {
   constructor(partial: Partial<UserEntity>) {

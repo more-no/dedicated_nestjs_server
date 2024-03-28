@@ -1,6 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { GroupPostController } from './group-post.controller';
 import { GroupPostService } from './group-post.service';
+import { PrismaService } from '../../prisma/prisma.service';
+import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
 
 describe('GroupPostController', () => {
   let controller: GroupPostController;
@@ -8,7 +11,7 @@ describe('GroupPostController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [GroupPostController],
-      providers: [GroupPostService],
+      providers: [GroupPostService, PrismaService, ConfigService, JwtService],
     }).compile();
 
     controller = module.get<GroupPostController>(GroupPostController);

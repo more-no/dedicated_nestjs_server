@@ -20,9 +20,9 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { AtGuard, RolesGuard } from 'common/guards';
+import { AtGuard, RolesGuard } from '../common/guards';
 import { RolesEnum } from '@prisma/client';
-import { Roles } from 'common/decorators';
+import { Roles } from '../common/decorators';
 
 @ApiTags('posts')
 @UsePipes(ValidationPipe)
