@@ -8,8 +8,6 @@ import {
   Delete,
   ParseIntPipe,
   UseGuards,
-  UsePipes,
-  ValidationPipe,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/createPost.dto';
@@ -32,7 +30,7 @@ export class PostsController {
   constructor(private postsService: PostsService) {}
 
   @Get('getPosts')
-  @Roles(RolesEnum.User)
+  @Roles(RolesEnum.User, RolesEnum.Editor, RolesEnum.Admin)
   @ApiOkResponse({ description: 'Posts successfully retrieved' })
   @ApiUnauthorizedResponse({ description: 'Posts not found' })
   async findAllPosts() {
@@ -40,7 +38,7 @@ export class PostsController {
   }
 
   @Get(':id')
-  @Roles(RolesEnum.User)
+  @Roles(RolesEnum.User, RolesEnum.Editor, RolesEnum.Admin)
   @ApiOkResponse({ description: 'Post successfully retrieved' })
   @ApiUnauthorizedResponse({ description: 'Post not found' })
   async findOnePost(@Param('id', ParseIntPipe) id: number) {

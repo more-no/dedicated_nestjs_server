@@ -8,8 +8,6 @@ import {
   Delete,
   UseGuards,
   ParseIntPipe,
-  UsePipes,
-  ValidationPipe,
 } from '@nestjs/common';
 import { GroupPostService } from './group-post.service';
 import { CreateGroupPostDto } from './dto/createGroupPost.dto';
@@ -31,20 +29,20 @@ import { AtGuard, RolesGuard } from '../common/guards';
 export class GroupPostController {
   constructor(private readonly groupPostService: GroupPostService) {}
 
-  @Get('getposts')
-  @Roles(RolesEnum.User)
+  @Get('getGroupPosts')
+  @Roles(RolesEnum.User, RolesEnum.Editor, RolesEnum.Admin)
   @ApiOkResponse({ description: 'Group posts successfully retrieved' })
   @ApiUnauthorizedResponse({ description: 'Group Posts not found' })
-  async findAllGroupPosts() {
-    return this.groupPostService.findAllGroupPosts();
+  async getGroupPosts() {
+    return this.groupPostService.getGroupPosts();
   }
 
   @Get(':id')
-  @Roles(RolesEnum.User)
+  @Roles(RolesEnum.User, RolesEnum.Editor, RolesEnum.Admin)
   @ApiOkResponse({ description: 'Group Post successfully retrieved' })
   @ApiUnauthorizedResponse({ description: 'Group Post not found' })
-  async findOneGroupPost(@Param('id', ParseIntPipe) id: number) {
-    return this.groupPostService.findOneGroupPost(id);
+  async getGroupPostById(@Param('id', ParseIntPipe) id: number) {
+    return this.groupPostService.getGroupPostById(id);
   }
 
   @Post(':id/create')
@@ -61,7 +59,7 @@ export class GroupPostController {
   @Roles(RolesEnum.User, RolesEnum.Editor)
   @ApiOkResponse({ description: 'Group Post successfully updated' })
   @ApiUnauthorizedResponse({ description: 'Group Post update failed' })
-  async update(
+  async updateGroupPost(
     @Param('userId', ParseIntPipe) userId: number,
     @Param('postId', ParseIntPipe) postId: number,
     @Body() { userIds, ...updateGroupPostDto }: UpdateGroupPostDto,
@@ -78,7 +76,7 @@ export class GroupPostController {
   @Roles(RolesEnum.User, RolesEnum.Editor)
   @ApiOkResponse({ description: 'Group Post successfully deleted' })
   @ApiUnauthorizedResponse({ description: 'Group Post deletion failed' })
-  async remove(
+  async removeGroupPost(
     @Param('userId', ParseIntPipe) userId: number,
     @Param('postId', ParseIntPipe) postId: number,
     @Body() userIds: number[],

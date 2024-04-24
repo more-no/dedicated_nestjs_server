@@ -12,8 +12,6 @@ import {
   ParseIntPipe,
   Get,
   ClassSerializerInterceptor,
-  UsePipes,
-  ValidationPipe,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto';
@@ -42,7 +40,7 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get('getUsers')
-  @Roles(RolesEnum.Admin)
+  @Roles(RolesEnum.User, RolesEnum.Editor, RolesEnum.Admin)
   @ApiOkResponse({ description: 'Users successfully retrieved' })
   @ApiBadRequestResponse({ description: 'Users not found' })
   async getUsers() {
@@ -52,7 +50,7 @@ export class UsersController {
 
   @Get(':id')
   @UseInterceptors(TokenInterceptor)
-  @Roles(RolesEnum.User, RolesEnum.Admin)
+  @Roles(RolesEnum.User)
   @ApiOkResponse({ description: 'User successfully retrieved' })
   @ApiBadRequestResponse({ description: 'User not found' })
   async getUserById(
@@ -97,6 +95,7 @@ export class UsersController {
     @Param('id', ParseIntPipe) id: number,
     @Req() request: CustomRequest,
   ) {
+    console.log('DATA: ', id, request.token);
     return await this.usersService.userRemove(id, request);
   }
 

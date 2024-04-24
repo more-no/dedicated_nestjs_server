@@ -6,7 +6,7 @@ import { GroupPost, Prisma } from '@prisma/client';
 export class GroupPostService {
   constructor(private prisma: PrismaService) {}
 
-  async findAllGroupPosts(): Promise<GroupPost[]> {
+  async getGroupPosts(): Promise<GroupPost[]> {
     const allGroupPost = await this.prisma.groupPost.findMany();
 
     if (!allGroupPost)
@@ -15,7 +15,7 @@ export class GroupPostService {
     return allGroupPost;
   }
 
-  async findOneGroupPost(id: number): Promise<GroupPost> {
+  async getGroupPostById(id: number): Promise<GroupPost> {
     const groupPost = await this.prisma.groupPost.findFirstOrThrow({
       where: {
         id: id,

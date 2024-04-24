@@ -15,13 +15,13 @@ export class PostsService {
   }
 
   async findOnePost(id: number): Promise<Post> {
-    const Post = await this.prisma.post.findFirstOrThrow({
+    const post = await this.prisma.post.findFirstOrThrow({
       where: {
         id: id,
       },
     });
 
-    return Post;
+    return post;
   }
 
   async createPost(
