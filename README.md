@@ -21,4 +21,4 @@ pnpm run dev
 
 ### backend <http://localhost:3000/>
 
-### frontend <http://localhost:4200/>s
+### frontend <http://localhost:4200/>
