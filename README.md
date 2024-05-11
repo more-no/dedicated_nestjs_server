@@ -6,6 +6,10 @@
 - Angular
 - Turbo Repo
 - PostgreSQL
+- RestAPI
+- Prisma
+- Jest
+- Json Web Tokens
 
 ## Build (with Turbo Repo)
 
