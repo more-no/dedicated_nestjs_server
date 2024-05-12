@@ -54,12 +54,6 @@ pnpm install
 (for Prisma Shadow Database: <https://www.prisma.io/docs/orm/prisma-migrate/understanding-prisma-migrate/shadow-database#shadow-database-user-permissions>)
 
 ```sql
-GRANT CREATE ON DATABASE dbname TO username;
-```
-
-#### OR
-
-```sql
 ALTER ROLE username WITH CREATEDB;
 ```
 
